@@ -38,10 +38,13 @@ const StyledHeader = styled.header`
   justify-content: space-between;
 
   .left-side {
+    h1 {
+      font-size: 30px;
+    }
     p {
       color: #888eb0;
       margin-top: 10px;
-      font-size: 14px;
+      font-size: 12px;
     }
   }
 
@@ -61,6 +64,7 @@ const StyledHeader = styled.header`
         font-size: 12px;
         display: flex;
         align-items: center;
+        cursor: pointer;
 
         img {
           margin-left: 10px;
@@ -74,12 +78,18 @@ const StyledHeader = styled.header`
       justify-content: space-between;
       background: none;
       background-color: #7c5dfa;
-      padding: 7px 14px 7px 7px;
+      padding: 8px 14px 8px 7px;
       border: none;
       border-radius: 25px;
       color: #ffffff;
       font-weight: 700;
       font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        background-color: #9277ff;
+      }
 
       .icon {
         display: grid;

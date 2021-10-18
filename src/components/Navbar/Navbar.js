@@ -14,7 +14,9 @@ const Navbar = () => {
 
       <div className="theme-avatar-wrapper">
         <div className="top">
-          <img src={moonIcon} alt="moon" />
+          <button>
+            <img src={moonIcon} alt="moon" />
+          </button>
         </div>
 
         <div className="bottom">
@@ -77,8 +79,12 @@ const StyledNav = styled.nav`
       place-items: center;
       border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 
-      img {
+      button {
+        background: none;
+        border: none;
         cursor: pointer;
+        display: grid;
+        place-items: center;
       }
     }
 
