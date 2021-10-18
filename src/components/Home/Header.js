@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import arrowIcon from "../../assets/images/icon-arrow-down.svg";
 import plusIcon from "../../assets/images/icon-plus.svg";
 
 const Header = () => {
+  const [modal, setModal] = useState(false);
   return (
     <StyledHeader>
       <div className="left-side">
@@ -13,10 +14,33 @@ const Header = () => {
 
       <div className="right-side">
         <div className="filter-wrapper">
-          <button className="filter-btn">
+          <button className="filter-btn" onClick={() => setModal(!modal)}>
             Filter by status
-            <img src={arrowIcon} alt="arrow" />
+            <img
+              src={arrowIcon}
+              alt="arrow"
+              className={modal ? "rotate" : ""}
+            />
           </button>
+
+          {modal && (
+            <div className="status-wrapper">
+              <div className="paid-status">
+                <input type="checkbox" name="paid" id="paid" />
+                <label htmlFor="paid">Paid</label>
+              </div>
+
+              <div className="pending-status">
+                <input type="checkbox" name="pending" id="pending" />
+                <label htmlFor="pending">Pending</label>
+              </div>
+
+              <div className="draft-status">
+                <input type="checkbox" name="draft" id="draft" />
+                <label htmlFor="draft">Draft</label>
+              </div>
+            </div>
+          )}
         </div>
 
         <button className="add-invoice-btn">
@@ -68,7 +92,22 @@ const StyledHeader = styled.header`
 
         img {
           margin-left: 10px;
+          transition: transform 0.2s ease-in-out;
+
+          &.rotate {
+            transform: rotate(-180deg);
+          }
         }
+      }
+
+      .status-wrapper {
+        position: absolute;
+        background-color: #ffffff;
+        top: 60px;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.1);
+        width: 170px;
       }
     }
 
