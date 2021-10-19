@@ -2,9 +2,16 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import arrowIcon from "../../assets/images/icon-arrow-down.svg";
 import plusIcon from "../../assets/images/icon-plus.svg";
+import checkIcon from "../../assets/images/icon-check.svg";
 
 const Header = () => {
   const [modal, setModal] = useState(false);
+  const [filterStatus, setFilterStatus] = useState("all");
+
+  const handleFilter = (e) => {
+    setFilterStatus(e.target.value);
+  };
+
   return (
     <StyledHeader>
       <div className="left-side">
@@ -25,20 +32,65 @@ const Header = () => {
 
           {modal && (
             <div className="status-wrapper">
-              <div className="paid-status">
-                <input type="checkbox" name="paid" id="paid" />
-                <label htmlFor="paid">Paid</label>
-              </div>
+              <label htmlFor="all" className="all">
+                <input
+                  type="radio"
+                  name="filter"
+                  id="all"
+                  value="all"
+                  onChange={handleFilter}
+                  checked={filterStatus === "all"}
+                />
+                <div className="custom-checkbox">
+                  <img src={checkIcon} alt="check icon" />
+                </div>
+                <span>All</span>
+              </label>
 
-              <div className="pending-status">
-                <input type="checkbox" name="pending" id="pending" />
-                <label htmlFor="pending">Pending</label>
-              </div>
+              <label htmlFor="paid" className="paid">
+                <input
+                  type="radio"
+                  name="filter"
+                  id="paid"
+                  value="paid"
+                  onChange={handleFilter}
+                  checked={filterStatus === "paid"}
+                />
+                <div className="custom-checkbox">
+                  <img src={checkIcon} alt="check icon" />
+                </div>
+                <span>Paid</span>
+              </label>
 
-              <div className="draft-status">
-                <input type="checkbox" name="draft" id="draft" />
-                <label htmlFor="draft">Draft</label>
-              </div>
+              <label htmlFor="pending">
+                <input
+                  type="radio"
+                  name="filter"
+                  id="pending"
+                  value="pending"
+                  onChange={handleFilter}
+                  checked={filterStatus === "pending"}
+                />
+                <div className="custom-checkbox">
+                  <img src={checkIcon} alt="check icon" />
+                </div>
+                <span>Pending</span>
+              </label>
+
+              <label htmlFor="draft">
+                <input
+                  type="radio"
+                  name="filter"
+                  id="draft"
+                  value="draft"
+                  onChange={handleFilter}
+                  checked={filterStatus === "draft"}
+                />
+                <div className="custom-checkbox">
+                  <img src={checkIcon} alt="check icon" />
+                </div>
+                <span>Draft</span>
+              </label>
             </div>
           )}
         </div>
@@ -107,7 +159,60 @@ const StyledHeader = styled.header`
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.1);
-        width: 170px;
+        width: 180px;
+
+        label {
+          display: block;
+
+          cursor: pointer;
+          display: flex;
+
+          &:hover {
+            .custom-checkbox {
+              border: 1px solid #7c5dfa;
+            }
+          }
+
+          &:not(:first-child) {
+            margin-top: 8px;
+          }
+
+          input[type="radio"] {
+            display: none;
+
+            &:checked ~ .custom-checkbox {
+              background-color: #7c5dfa;
+
+              img {
+                transform: scale(1);
+              }
+            }
+          }
+
+          .custom-checkbox {
+            height: 17px;
+            width: 17px;
+            border-radius: 3px;
+            background-color: #dfe3fa;
+            border: 1px solid transparent;
+            transition: all 0.2 ease-in-out;
+            display: grid;
+            place-items: center;
+            margin-right: 15px;
+            transition: all 0.2s ease-in-out;
+
+            img {
+              transform: scale(0);
+              transition: all 0.4s ease-in-out;
+            }
+          }
+
+          span {
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.5;
+          }
+        }
       }
     }
 
