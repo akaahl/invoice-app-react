@@ -10,8 +10,8 @@ function App() {
       <GlobalStyle />
       <Navbar />
 
-      {/* <Home /> */}
-      <InvoicePage />
+      <Home />
+      {/* <InvoicePage /> */}
     </StyledApp>
   );
 }
