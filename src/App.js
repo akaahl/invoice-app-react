@@ -1,6 +1,7 @@
 import GlobalStyle from "./globalStyles";
 import Navbar from "./components/Navbar/Navbar";
 import Home from "./pages/Home";
+import InvoicePage from "./pages/InvoicePage";
 import styled from "styled-components";
 
 function App() {
@@ -9,7 +10,8 @@ function App() {
       <GlobalStyle />
       <Navbar />
 
-      <Home />
+      {/* <Home /> */}
+      <InvoicePage />
     </StyledApp>
   );
 }

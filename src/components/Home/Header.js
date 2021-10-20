@@ -8,6 +8,23 @@ const Header = () => {
   const [modal, setModal] = useState(false);
   const [filterStatus, setFilterStatus] = useState("all");
 
+  const closeModal = (e) => {
+    e.preventDefault();
+    setModal(false);
+    document.removeEventListener("click", closeModal);
+  };
+
+  const handleModal = (e) => {
+    e.stopPropagation();
+
+    if (modal) {
+      setModal(false);
+    } else {
+      setModal(true);
+      document.addEventListener("click", closeModal);
+    }
+  };
+
   const handleFilter = (e) => {
     setFilterStatus(e.target.value);
   };
@@ -21,7 +38,7 @@ const Header = () => {
 
       <div className="right-side">
         <div className="filter-wrapper">
-          <button className="filter-btn" onClick={() => setModal(!modal)}>
+          <button className="filter-btn" onClick={handleModal}>
             Filter by status
             <img
               src={arrowIcon}
@@ -31,7 +48,10 @@ const Header = () => {
           </button>
 
           {modal && (
-            <div className="status-wrapper">
+            <div
+              className="status-wrapper"
+              onClick={(e) => e.stopPropagation()}
+            >
               <label htmlFor="all" className="all">
                 <input
                   type="radio"
