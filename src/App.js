@@ -1,5 +1,6 @@
 import GlobalStyle from "./globalStyles";
 import Navbar from "./components/Navbar/Navbar";
+import FormWrapper from "./components/Form/FormWrapper";
 import Home from "./pages/Home";
 import InvoicePage from "./pages/InvoicePage";
 import styled from "styled-components";
@@ -10,6 +11,7 @@ function App() {
     <StyledApp>
       <GlobalStyle />
       <Navbar />
+      <FormWrapper />
 
       <Switch>
         <Route path="/" exact>
