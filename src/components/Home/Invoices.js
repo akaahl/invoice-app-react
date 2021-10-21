@@ -39,7 +39,7 @@ const Invoices = () => {
           <div className="right-side">
             <p className="amount">
               <span>&pound;</span>
-              {total}
+              {total.toLocaleString()}
             </p>
 
             <div className="status-wrapper">

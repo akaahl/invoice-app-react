@@ -1,24 +1,41 @@
 import React from "react";
 import styled from "styled-components";
+import { formatDate } from "../../utils";
+import { v4 as uuidv4 } from "uuid";
 
-const InvoiceDetails = () => {
+const InvoiceDetails = ({ selectedInvoice }) => {
+  const {
+    clientAddress,
+    clientEmail,
+    clientName,
+    createdAt,
+    description,
+    id,
+    items,
+    paymentDue,
+    paymentTerms,
+    senderAddress,
+    status,
+    total,
+  } = selectedInvoice;
+
   return (
-    <StyledWrapper>
+    <StyledWrapper status={status}>
       <div className="top">
         <div className="left-side">
           <h2>
             <span>#</span>
-            XM9141
+            {id}
           </h2>
 
-          <p className="description">Graphic Design</p>
+          <p className="description">{description}</p>
         </div>
 
         <div className="right-side">
-          <p className="street-address">19 Union Terrace</p>
-          <p className="city">London</p>
-          <p className="post-code">E1 3EZ</p>
-          <p className="country">United Kingdom</p>
+          <p className="street-address">{senderAddress.street}</p>
+          <p className="city">{senderAddress.city}</p>
+          <p className="post-code">{senderAddress.postCode}</p>
+          <p className="country">{senderAddress.country}</p>
         </div>
       </div>
 
@@ -26,27 +43,27 @@ const InvoiceDetails = () => {
         <div className="dates">
           <div className="invoice-date">
             <p className="date">Invoice Date</p>
-            <h2>21 Aug 2021</h2>
+            <h2>{formatDate(createdAt)}</h2>
           </div>
 
           <div className="payment-due">
             <p className="due">Payment Due</p>
-            <h2>20 Sep 2021</h2>
+            <h2>{formatDate(paymentDue)}</h2>
           </div>
         </div>
 
         <div className="billing-details">
           <p className="bill-to">Bill To</p>
-          <h2>Melissa Clarke</h2>
-          <p className="client-street-address">46 Abbey Row</p>
-          <p className="client-city">Cambridge</p>
-          <p className="client-post-code">CB5 6EG</p>
-          <p className="client-country">United Kingdom</p>
+          <h2>{clientName}</h2>
+          <p className="client-street-address">{clientAddress.street}</p>
+          <p className="client-city">{clientAddress.city}</p>
+          <p className="client-post-code">{clientAddress.postCode}</p>
+          <p className="client-country">{clientAddress.country}</p>
         </div>
 
         <div className="sent-details">
           <p>Sent To</p>
-          <h2>melissa.clarkefgagagdagagagagdagdsgsg@example.com</h2>
+          <h2>{clientEmail}</h2>
         </div>
       </div>
 
@@ -78,7 +95,7 @@ const InvoiceDetails = () => {
 
         <div className="amount-due">
           <p className="due">Amount Due</p>
-          <h2 className="grand-total">&pound;4,032.33</h2>
+          <h2 className="grand-total">&pound;{total.toLocaleString()}</h2>
         </div>
       </div>
     </StyledWrapper>
