@@ -4,8 +4,7 @@ import arrowIcon from "../assets/images/icon-arrow-left.svg";
 import Header from "../components/InvoicePage/Header";
 import InvoiceDetails from "../components/InvoicePage/InvoiceDetails";
 import { useHistory, useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchData } from "../actions/dataActions";
+import { useSelector } from "react-redux";
 
 const InvoicePage = () => {
   const history = useHistory();
@@ -16,10 +15,9 @@ const InvoicePage = () => {
 
   console.log(selectedInvoice);
 
-  // useEffect(() => {
-  //     const
-  //     dispatch(fetchData())
-  // }, [dispatch])
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, []);
 
   return (
     <StyledWrapper>
@@ -30,7 +28,7 @@ const InvoicePage = () => {
         </button>
       </nav>
 
-      <Header />
+      <Header selectedInvoice={selectedInvoice} />
       <InvoiceDetails selectedInvoice={selectedInvoice} />
     </StyledWrapper>
   );

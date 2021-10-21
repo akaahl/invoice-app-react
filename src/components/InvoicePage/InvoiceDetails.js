@@ -13,7 +13,6 @@ const InvoiceDetails = ({ selectedInvoice }) => {
     id,
     items,
     paymentDue,
-    paymentTerms,
     senderAddress,
     status,
     total,
@@ -77,19 +76,14 @@ const InvoiceDetails = ({ selectedInvoice }) => {
           </div>
 
           <ul className="item-details">
-            <li className="individual-item">
-              <p className="name">New Logo</p>
-              <p className="quantity">1</p>
-              <p className="price">&pound;1,532.33</p>
-              <p className="total">&pound;1,532.33</p>
-            </li>
-
-            <li className="individual-item">
-              <p className="name">New Logo</p>
-              <p className="quantity">1</p>
-              <p className="price">&pound;1,532.33</p>
-              <p className="total">&pound;1,532.33</p>
-            </li>
+            {items.map(({ name, total, quantity, price }) => (
+              <li className="individual-item" key={uuidv4()}>
+                <p className="name">{name}</p>
+                <p className="quantity">{quantity}</p>
+                <p className="price">&pound;{price.toLocaleString()}</p>
+                <p className="total">&pound;{total.toLocaleString()}</p>
+              </li>
+            ))}
           </ul>
         </div>
 
@@ -152,6 +146,7 @@ const StyledWrapper = styled.section`
 
     .dates {
       height: auto;
+      min-height: 150px;
       width: 33%;
       display: flex;
       flex-direction: column;

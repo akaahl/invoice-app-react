@@ -11,7 +11,6 @@ const Invoices = () => {
   const data = useSelector((state) => state.root.data);
 
   const handleClick = (id) => {
-    console.log("clicked");
     history.push(`/invoice/${id}`);
   };
 

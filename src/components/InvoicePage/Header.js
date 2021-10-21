@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 
-const Header = () => {
+const Header = ({ selectedInvoice }) => {
+  const { status } = selectedInvoice;
   return (
-    <StyledHeader>
+    <StyledHeader status={status}>
       <div className="left-side">
         <p className="status">Status</p>
 
@@ -16,6 +17,10 @@ const Header = () => {
       <div className="right-side">
         <button className="edit">Edit</button>
         <button className="delete">Delete</button>
+        {status === "pending" ||
+          (status === "draft" && (
+            <button className="mark-as-paid">Mark as Paid</button>
+          ))}
       </div>
     </StyledHeader>
   );
@@ -48,21 +53,36 @@ const StyledHeader = styled.header`
       border-radius: 8px;
       display: flex;
       align-items: center;
-      background-color: #f3fdf9;
+      background-color: ${({ status }) =>
+        status === "paid"
+          ? "#f3fdf9"
+          : status === "pending"
+          ? "#fff8f0"
+          : "#f3f3f5"};
       margin-left: 20px;
 
       .circle {
         height: 8px;
         width: 8px;
         border-radius: 50%;
-        background-color: #33d69f;
+        background-color: ${({ status }) =>
+          status === "paid"
+            ? "#33d69f"
+            : status === "pending"
+            ? "#ff8f00"
+            : "#373b53"};
         margin-right: 10px;
       }
 
       .status-type {
         font-size: 12px;
         font-weight: 700;
-        color: #33d69f;
+        color: ${({ status }) =>
+          status === "paid"
+            ? "#33d69f"
+            : status === "pending"
+            ? "#ff8f00"
+            : "#373b53"};
       }
     }
   }
@@ -72,7 +92,7 @@ const StyledHeader = styled.header`
     align-items: center;
 
     button {
-      padding: 15px 30px;
+      padding: 15px 25px;
       background: none;
       border: none;
       cursor: pointer;
@@ -97,6 +117,17 @@ const StyledHeader = styled.header`
 
         &:hover {
           background-color: #ff9797;
+        }
+      }
+
+      &.mark-as-paid {
+        background-color: #7c5dfa;
+        color: #ffffff;
+        margin-left: 10px;
+        transition: all 0.2s ease-in-out;
+
+        &:hover {
+          background-color: #9277ff;
         }
       }
     }
