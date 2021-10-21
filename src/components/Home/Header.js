@@ -3,10 +3,12 @@ import styled from "styled-components";
 import arrowIcon from "../../assets/images/icon-arrow-down.svg";
 import plusIcon from "../../assets/images/icon-plus.svg";
 import checkIcon from "../../assets/images/icon-check.svg";
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const [modal, setModal] = useState(false);
   const [filterStatus, setFilterStatus] = useState("all");
+  const data = useSelector((state) => state.root.data);
 
   const closeModal = (e) => {
     e.preventDefault();
@@ -33,7 +35,7 @@ const Header = () => {
     <StyledHeader>
       <div className="left-side">
         <h1>Invoices</h1>
-        <p>There are 7 total invoices.</p>
+        <p>There are {data.length} total invoices.</p>
       </div>
 
       <div className="right-side">
