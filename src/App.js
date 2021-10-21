@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar/Navbar";
 import Home from "./pages/Home";
 import InvoicePage from "./pages/InvoicePage";
 import styled from "styled-components";
+import { Switch, Route } from "react-router-dom";
 
 function App() {
   return (
@@ -10,8 +11,15 @@ function App() {
       <GlobalStyle />
       <Navbar />
 
-      <Home />
-      {/* <InvoicePage /> */}
+      <Switch>
+        <Route path="/" exact>
+          <Home />
+        </Route>
+
+        <Route path="/invoice/:id">
+          <InvoicePage />
+        </Route>
+      </Switch>
     </StyledApp>
   );
 }

@@ -1,9 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import Header from "../components/Home/Header";
 import Invoices from "../components/Home/Invoices";
+import { useDispatch } from "react-redux";
+import { fetchData } from "../actions/dataActions";
 
 const Home = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const dataUrl = "data.json";
+
+    dispatch(fetchData(dataUrl));
+  }, [dispatch]);
   return (
     <StyledHome>
       <Header />
