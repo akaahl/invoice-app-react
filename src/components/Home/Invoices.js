@@ -3,6 +3,7 @@ import styled from "styled-components";
 import arrowIcon from "../../assets/images/icon-arrow-right.svg";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
+import { formatDate } from "../../utils";
 
 const Invoices = () => {
   const data = useSelector((state) => state.root.data);
@@ -10,14 +11,14 @@ const Invoices = () => {
   return (
     <StyledList>
       {data.map(({ id, paymentDue, clientName, total, status }) => (
-        <StyledInvoice key={uuidv4()}>
+        <StyledInvoice key={uuidv4()} status={status}>
           <div className="left-side">
             <p className="id">
               <span>#</span>
               {id}
             </p>
 
-            <p className="due-date">Due {paymentDue}</p>
+            <p className="due-date">Due {formatDate(paymentDue)}</p>
             <p className="name">{clientName}</p>
           </div>
 
@@ -29,7 +30,9 @@ const Invoices = () => {
 
             <div className="status-wrapper">
               <div className="circle"></div>
-              <p className="status">{status}</p>
+              <p className="status">
+                {status[0].toUpperCase() + status.slice(1)}
+              </p>
             </div>
 
             <img src={arrowIcon} alt="arrow icon" />
@@ -77,6 +80,7 @@ const StyledInvoice = styled.li`
 
     .id {
       font-weight: 700;
+      width: 90px;
       span {
         color: #7e88c3;
       }
@@ -85,7 +89,10 @@ const StyledInvoice = styled.li`
     .due-date,
     .name {
       color: #888eb0;
-      margin-left: 30px;
+    }
+
+    .due-date {
+      width: 140px;
     }
   }
 
@@ -100,25 +107,42 @@ const StyledInvoice = styled.li`
     }
 
     .status-wrapper {
-      padding: 15px 30px;
+      width: 110px;
+      padding: 15px 0px;
       border-radius: 8px;
       display: flex;
       align-items: center;
-      background-color: #f3fdf9;
+      justify-content: center;
+      background-color: ${({ status }) =>
+        status === "paid"
+          ? "#f3fdf9"
+          : status === "pending"
+          ? "#fff8f0"
+          : "#f3f3f5"};
       margin-right: 20px;
 
       .circle {
         height: 8px;
         width: 8px;
         border-radius: 50%;
-        background-color: #33d69f;
-        margin-right: 10px;
+        background-color: ${({ status }) =>
+          status === "paid"
+            ? "#33d69f"
+            : status === "pending"
+            ? "#ff8f00"
+            : "#373b53"};
+        margin-right: 7px;
       }
 
       .status {
         font-size: 12px;
         font-weight: 700;
-        color: #33d69f;
+        color: ${({ status }) =>
+          status === "paid"
+            ? "#33d69f"
+            : status === "pending"
+            ? "#ff8f00"
+            : "#373b53"};
       }
     }
   }
