@@ -4,14 +4,28 @@ import arrowIcon from "../../assets/images/icon-arrow-right.svg";
 import { useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import { formatDate } from "../../utils";
+import { useHistory } from "react-router-dom";
 
 const Invoices = () => {
+  const history = useHistory();
   const data = useSelector((state) => state.root.data);
+
+  const handleClick = (id) => {
+    console.log("clicked");
+    history.push(`/invoice/${id}`);
+  };
 
   return (
     <StyledList>
       {data.map(({ id, paymentDue, clientName, total, status }) => (
-        <StyledInvoice key={uuidv4()} status={status}>
+        <StyledInvoice
+          key={uuidv4()}
+          status={status}
+          onClick={(e) => {
+            e.preventDefault();
+            handleClick(id);
+          }}
+        >
           <div className="left-side">
             <p className="id">
               <span>#</span>
