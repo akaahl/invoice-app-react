@@ -1,8 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import arrowIcon from "../../assets/images/icon-arrow-down.svg";
+import checkIcon from "../../assets/images/icon-check.svg";
 
 const Form = () => {
+  const [paymentTerms, setPaymentTerms] = useState("Net 1 Day");
+  const [termsModal, setTermsModal] = useState(false);
+
+  const handlePaymentTerms = (e) => {
+    const textContent = e.target.textContent;
+
+    if (textContent !== paymentTerms) {
+      setPaymentTerms((prevText) => textContent);
+    }
+  };
+
+  const closeTermsModal = (e) => {
+    e.preventDefault();
+    setTermsModal(false);
+    document.removeEventListener("click", closeTermsModal);
+  };
+
+  const handleTermsModal = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!termsModal) {
+      setTermsModal(true);
+      document.addEventListener("click", closeTermsModal);
+    } else {
+      setTermsModal(false);
+    }
+  };
   return (
     <StyledForm>
       <header>
@@ -85,9 +114,51 @@ const Form = () => {
             <div className="input-wrapper payment-terms">
               <label htmlFor="payment-terms">Payment Terms</label>
 
-              <div className="payment-terms-wrapper">
-                <span>Net 30 Days</span>
+              <div className="payment-terms-wrapper" onClick={handleTermsModal}>
+                <span>{paymentTerms}</span>
                 <img src={arrowIcon} alt="arrow icon" />
+
+                {termsModal && (
+                  <div
+                    className="select-options"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <p
+                      onClick={handlePaymentTerms}
+                      className={paymentTerms === "Net 1 Day" ? "selected" : ""}
+                    >
+                      Net 1 Day
+                      <img src={checkIcon} alt="check icon" />
+                    </p>
+                    <p
+                      onClick={handlePaymentTerms}
+                      className={
+                        paymentTerms === "Net 7 Days" ? "selected" : ""
+                      }
+                    >
+                      Net 7 Days
+                      <img src={checkIcon} alt="check icon" />
+                    </p>
+                    <p
+                      onClick={handlePaymentTerms}
+                      className={
+                        paymentTerms === "Net 14 Days" ? "selected" : ""
+                      }
+                    >
+                      Net 14 Days
+                      <img src={checkIcon} alt="check icon" />
+                    </p>
+                    <p
+                      onClick={handlePaymentTerms}
+                      className={
+                        paymentTerms === "Net 30 Days" ? "selected" : ""
+                      }
+                    >
+                      Net 30 Days
+                      <img src={checkIcon} alt="check icon" />
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -195,6 +266,47 @@ const StyledForm = styled.form`
                 color: #000000;
                 font-size: 12px;
                 font-weight: 700;
+              }
+
+              .select-options {
+                position: absolute;
+                bottom: -190px;
+                left: 0;
+                border-radius: 5px;
+                background-color: #ffffff;
+                overflow: hidden;
+                width: 100%;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+                cursor: default;
+
+                p {
+                  padding: 15px 20px;
+                  font-size: 12px;
+                  font-weight: 600;
+                  cursor: pointer;
+                  transition: color 0.2s ease-in-out;
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+
+                  &:hover {
+                    color: #7c5dfa;
+                  }
+
+                  &.selected {
+                    color: #7c5dfa;
+
+                    img {
+                      transform: scale(1);
+                    }
+                  }
+
+                  img {
+                    object-fit: cover;
+                    transform: scale(0);
+                    transition: all 0.2s ease-in-out;
+                  }
+                }
               }
             }
           }
