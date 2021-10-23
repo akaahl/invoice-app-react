@@ -1,4 +1,4 @@
-export const formatDate = (date) => {
+export const formatDate = (date, formDate) => {
   const convertToMonthName = (month) => {
     switch (month) {
       case "01":
@@ -30,10 +30,18 @@ export const formatDate = (date) => {
     }
   };
 
-  const newDate = date
-    .split("-")
-    .map((num, index) => (index === 1 ? convertToMonthName(num) : num))
-    .reverse()
-    .join(" ");
-  return newDate;
+  if (formDate) {
+    const newDateArray = date
+      .split("/")
+      .map((num, index) => (index === 1 ? convertToMonthName(num) : num));
+    const newDateString = `${newDateArray[1]} ${newDateArray[0]}, ${newDateArray[2]}`;
+    return newDateString;
+  } else {
+    const newDate = date
+      .split("-")
+      .map((num, index) => (index === 1 ? convertToMonthName(num) : num))
+      .reverse()
+      .join(" ");
+    return newDate;
+  }
 };

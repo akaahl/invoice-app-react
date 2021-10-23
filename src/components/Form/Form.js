@@ -4,8 +4,10 @@ import arrowIcon from "../../assets/images/icon-arrow-down.svg";
 import checkIcon from "../../assets/images/icon-check.svg";
 import plusIcon from "../../assets/images/icon-plus.svg";
 import calendarIcon from "../../assets/images/icon-calendar.svg";
+import { ReactComponent as DeleteIcon } from "../../assets/images/icon-delete.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { formatDate } from "../../utils";
 
 const Form = () => {
   const [paymentTerms, setPaymentTerms] = useState("Net 1 Day");
@@ -39,8 +41,6 @@ const Form = () => {
   };
 
   const DatePickerInput = forwardRef(({ value, onClick }, ref) => {
-    console.log(value);
-    console.log(typeof value);
     return (
       <button
         ref={ref}
@@ -50,7 +50,7 @@ const Form = () => {
         }}
         className="custom-date-picker"
       >
-        {value}
+        {formatDate(value, true)}
         <img src={calendarIcon} alt="calendar icon" />
       </button>
     );
@@ -206,7 +206,61 @@ const Form = () => {
           <div className="item-list-wrapper">
             <h4>Item List</h4>
 
-            <button>
+            <ul>
+              <li>
+                <div className="input-wrapper item-name">
+                  <label htmlFor="item-name">Item name</label>
+                  <input type="text" name="item-name" id="item-name" />
+                </div>
+
+                <div className="input-wrapper quantity">
+                  <label htmlFor="quantity">Qty.</label>
+                  <input type="text" name="quantity" id="quantity" />
+                </div>
+
+                <div className="input-wrapper price">
+                  <label htmlFor="price">Price</label>
+                  <input type="text" name="price" id="price" />
+                </div>
+
+                <div className="input-wrapper total">
+                  <label htmlFor="total">Total</label>
+                  <span>13123</span>
+                </div>
+
+                <button>
+                  <DeleteIcon />
+                </button>
+              </li>
+
+              <li>
+                <div className="input-wrapper item-name">
+                  <label htmlFor="item-name">Item name</label>
+                  <input type="text" name="item-name" id="item-name" />
+                </div>
+
+                <div className="input-wrapper quantity">
+                  <label htmlFor="quantity">Qty.</label>
+                  <input type="text" name="quantity" id="quantity" />
+                </div>
+
+                <div className="input-wrapper price">
+                  <label htmlFor="price">Price</label>
+                  <input type="text" name="price" id="price" />
+                </div>
+
+                <div className="input-wrapper total">
+                  <label htmlFor="total">Total</label>
+                  <span>13123</span>
+                </div>
+
+                <button>
+                  <DeleteIcon />
+                </button>
+              </li>
+            </ul>
+
+            <button className="add-new-btn">
               <img src={plusIcon} alt="plus icon" />
               Add New Item
             </button>
@@ -317,6 +371,9 @@ const StyledForm = styled.form`
               align-items: center;
               justify-content: space-between;
               cursor: pointer;
+              color: #000000;
+              font-size: 12px;
+              font-weight: 600;
             }
           }
 
@@ -339,7 +396,7 @@ const StyledForm = styled.form`
               span {
                 color: #000000;
                 font-size: 12px;
-                font-weight: 700;
+                font-weight: 600;
               }
 
               .select-options {
@@ -396,7 +453,80 @@ const StyledForm = styled.form`
             font-weight: 700;
           }
 
-          button {
+          ul {
+            list-style: none;
+
+            li {
+              display: flex;
+
+              &:not(:first-child) {
+                .input-wrapper {
+                  margin-top: 0;
+
+                  label {
+                    display: none;
+                  }
+                }
+
+                button {
+                  margin-top: 10px;
+                }
+              }
+
+              .input-wrapper {
+                &.item-name {
+                  flex: 0.5;
+                }
+
+                &.quantity {
+                  margin-left: 20px;
+                  flex: 0.2;
+                }
+
+                &.price {
+                  margin-left: 20px;
+                  flex: 0.3;
+                }
+
+                &.total {
+                  margin-left: 20px;
+                  flex: 0.1;
+
+                  span {
+                    margin-top: 26px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    color: #888eb0;
+                  }
+                }
+              }
+
+              button {
+                margin-left: 20px;
+                margin-top: 46px;
+                border: none;
+                background: none;
+                cursor: pointer;
+                padding: 0px 5px;
+
+                svg {
+                  path {
+                    transition: all 0.2s ease-in-out;
+                  }
+                }
+
+                &:hover {
+                  svg {
+                    path {
+                      fill: orangered;
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          .add-new-btn {
             margin-top: 20px;
             width: 100%;
             padding: 20px 25px;
@@ -465,11 +595,19 @@ const StyledForm = styled.form`
             font-weight: 700;
             color: rgba(0, 0, 0, 0.3);
           }
+
+          &:focus {
+            border: 1px solid #7c5dfa;
+          }
           margin-top: 10px;
           padding: 15px;
           border-radius: 5px;
           border: 1px solid rgba(0, 0, 0, 0.1);
           width: calc(100%);
+          transition: all 0.2s ease-in-out;
+          outline: none;
+          color: #000000;
+          font-weight: 600;
         }
       }
     }
