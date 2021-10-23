@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import arrowIcon from "../../assets/images/icon-arrow-down.svg";
 import checkIcon from "../../assets/images/icon-check.svg";
+import plusIcon from "../../assets/images/icon-plus.svg";
 
 const Form = () => {
   const [paymentTerms, setPaymentTerms] = useState("Net 1 Day");
@@ -162,8 +163,33 @@ const Form = () => {
               </div>
             </div>
           </div>
+
+          <div className="input-wrapper description">
+            <label htmlFor="description">Description</label>
+            <input
+              type="text"
+              name="description"
+              id="description"
+              placeholder="e.g. Graphic Design Service"
+            />
+          </div>
+
+          <div className="item-list-wrapper">
+            <h4>Item List</h4>
+
+            <button>
+              <img src={plusIcon} alt="plus icon" />
+              Add New Item
+            </button>
+          </div>
         </fieldset>
       </main>
+
+      <footer>
+        <button className="discard-btn">Discard</button>
+        <button className="draft-btn">Save as Draft</button>
+        <button className="submit-btn">Save &amp; Send</button>
+      </footer>
     </StyledForm>
   );
 };
@@ -207,7 +233,9 @@ const StyledForm = styled.form`
           "email email email"
           "street street street"
           "city postCode country"
-          "dates dates dates";
+          "dates dates dates"
+          "desc desc desc"
+          "item-list item-list item-list";
 
         .input-wrapper {
           &.client-name {
@@ -234,6 +262,10 @@ const StyledForm = styled.form`
           &.client-country {
             margin-left: 15px;
             grid-area: country;
+          }
+
+          &.description {
+            grid-area: desc;
           }
         }
 
@@ -311,6 +343,41 @@ const StyledForm = styled.form`
             }
           }
         }
+
+        .item-list-wrapper {
+          grid-area: item-list;
+          margin-top: 40px;
+
+          h4 {
+            color: #777f98;
+            font-size: 20px;
+            font-weight: 700;
+          }
+
+          button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 20px 25px;
+            border-radius: 25px;
+            display: flex;
+            justify-content: center;
+            color: #7e88c3;
+            font-weight: 600;
+            font-size: 12px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+
+            &:hover {
+              background-color: #dfe3fa;
+            }
+
+            img {
+              margin-right: 5px;
+            }
+          }
+        }
       }
 
       legend {
@@ -361,6 +428,53 @@ const StyledForm = styled.form`
           border-radius: 5px;
           border: 1px solid rgba(0, 0, 0, 0.1);
           width: calc(100%);
+        }
+      }
+    }
+  }
+
+  footer {
+    margin-top: 40px;
+    display: grid;
+    grid-template-areas: "discard . . . . . draft submit";
+
+    button {
+      padding: 17px 15px;
+      border-radius: 25px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 12px;
+      transition: all 0.3s ease-in-out;
+
+      &.discard-btn {
+        grid-area: discard;
+        color: #7e88c3;
+
+        &:hover {
+          background-color: #dfe3fa;
+        }
+      }
+
+      &.draft-btn {
+        grid-area: draft;
+        margin-right: 10px;
+        background-color: #363b53;
+        color: #7e88c3;
+
+        &:hover {
+          background-color: #000000;
+        }
+      }
+
+      &.submit-btn {
+        grid-area: submit;
+        background-color: #7c5dfa;
+        color: #ffffff;
+
+        &:hover {
+          background-color: #9277ff;
         }
       }
     }
