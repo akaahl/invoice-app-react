@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 import styled from "styled-components";
 import arrowIcon from "../../assets/images/icon-arrow-down.svg";
 import checkIcon from "../../assets/images/icon-check.svg";
 import plusIcon from "../../assets/images/icon-plus.svg";
+import calendarIcon from "../../assets/images/icon-calendar.svg";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Form = () => {
   const [paymentTerms, setPaymentTerms] = useState("Net 1 Day");
   const [termsModal, setTermsModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const handlePaymentTerms = (e) => {
     const textContent = e.target.textContent;
@@ -33,6 +37,25 @@ const Form = () => {
       setTermsModal(false);
     }
   };
+
+  const DatePickerInput = forwardRef(({ value, onClick }, ref) => {
+    console.log(value);
+    console.log(typeof value);
+    return (
+      <button
+        ref={ref}
+        onClick={(e) => {
+          e.preventDefault();
+          onClick();
+        }}
+        className="custom-date-picker"
+      >
+        {value}
+        <img src={calendarIcon} alt="calendar icon" />
+      </button>
+    );
+  });
+
   return (
     <StyledForm>
       <header>
@@ -109,7 +132,13 @@ const Form = () => {
           <div className="dates">
             <div className="input-wrapper invoice-date">
               <label htmlFor="invoice-date">Invoice Date</label>
-              <input type="date" name="invoice-date" id="invoice-date" />
+              {/* <input type="date" name="invoice-date" id="invoice-date" /> */}
+              <DatePicker
+                selected={selectedDate}
+                onChange={(date) => setSelectedDate(date)}
+                dateFormat="dd/MM/yyyy"
+                customInput={<DatePickerInput />}
+              />
             </div>
 
             <div className="input-wrapper payment-terms">
@@ -276,6 +305,19 @@ const StyledForm = styled.form`
 
           .invoice-date {
             flex: 0.5;
+
+            .custom-date-picker {
+              padding: 15px;
+              border-radius: 5px;
+              border: 1px solid rgba(0, 0, 0, 0.1);
+              width: 100%;
+              background: none;
+              margin-top: 10px;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              cursor: pointer;
+            }
           }
 
           .payment-terms {
@@ -284,7 +326,7 @@ const StyledForm = styled.form`
 
             .payment-terms-wrapper {
               position: relative;
-              padding: 18px 15px;
+              padding: 15px;
               border-radius: 5px;
               border: 1px solid rgba(0, 0, 0, 0.1);
               margin-top: 10px;
