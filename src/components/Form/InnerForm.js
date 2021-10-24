@@ -1,46 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import arrowIcon from "../../assets/images/icon-arrow-down.svg";
-import checkIcon from "../../assets/images/icon-check.svg";
 import plusIcon from "../../assets/images/icon-plus.svg";
 import DatePickerInput from "./DatePickerInput";
 import { ReactComponent as DeleteIcon } from "../../assets/images/icon-delete.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Formik, Form, Field, FieldsArray } from "formik";
+import { Formik, Form, Field, FieldArray } from "formik";
 import { initialValues, validationSchema } from "../../utils";
+import SelectOptions from "./SelectOptions.js";
 
 const InnerForm = () => {
-  const [paymentTerms, setPaymentTerms] = useState("Net 1 Day");
-  const [termsModal, setTermsModal] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-
-  const handlePaymentTerms = (e) => {
-    const textContent = e.target.textContent;
-
-    if (textContent !== paymentTerms) {
-      setPaymentTerms((prevText) => textContent);
-    }
-  };
-
-  const closeTermsModal = (e) => {
-    e.preventDefault();
-    setTermsModal(false);
-    document.removeEventListener("click", closeTermsModal);
-  };
-
-  const handleTermsModal = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!termsModal) {
-      setTermsModal(true);
-      document.addEventListener("click", closeTermsModal);
-    } else {
-      setTermsModal(false);
-    }
-  };
-
   return (
     <Formik
       initialValues={initialValues}
@@ -48,7 +17,7 @@ const InnerForm = () => {
       validateOnChange={false}
     >
       {(formik) => {
-        const { touched, errors } = formik;
+        const { touched, errors, setFieldValue, values } = formik;
         console.log(formik);
         return (
           <StyledForm as={Form}>
@@ -274,7 +243,6 @@ const InnerForm = () => {
                         return (
                           <DatePicker
                             id="invoiceDate"
-                            {...field}
                             selected={value}
                             onChange={(date) =>
                               setFieldValue("invoiceDate", date)
@@ -287,70 +255,29 @@ const InnerForm = () => {
                     </Field>
                   </div>
 
-                  <div className="input-wrapper payment-terms">
-                    <label htmlFor="payment-terms">Payment Terms</label>
-
-                    <div
-                      className="payment-terms-wrapper"
-                      onClick={handleTermsModal}
-                    >
-                      <span>{paymentTerms}</span>
-                      <img src={arrowIcon} alt="arrow icon" />
-
-                      {termsModal && (
-                        <div
-                          className="select-options"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <p
-                            onClick={handlePaymentTerms}
-                            className={
-                              paymentTerms === "Net 1 Day" ? "selected" : ""
-                            }
-                          >
-                            Net 1 Day
-                            <img src={checkIcon} alt="check icon" />
-                          </p>
-                          <p
-                            onClick={handlePaymentTerms}
-                            className={
-                              paymentTerms === "Net 7 Days" ? "selected" : ""
-                            }
-                          >
-                            Net 7 Days
-                            <img src={checkIcon} alt="check icon" />
-                          </p>
-                          <p
-                            onClick={handlePaymentTerms}
-                            className={
-                              paymentTerms === "Net 14 Days" ? "selected" : ""
-                            }
-                          >
-                            Net 14 Days
-                            <img src={checkIcon} alt="check icon" />
-                          </p>
-                          <p
-                            onClick={handlePaymentTerms}
-                            className={
-                              paymentTerms === "Net 30 Days" ? "selected" : ""
-                            }
-                          >
-                            Net 30 Days
-                            <img src={checkIcon} alt="check icon" />
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  <SelectOptions
+                    values={values}
+                    setFieldValue={setFieldValue}
+                  />
                 </div>
 
                 <div className="input-wrapper description">
-                  <label htmlFor="description">Description</label>
-                  <input
+                  <label
+                    htmlFor="description"
+                    className={
+                      errors.description && touched.description ? "error" : ""
+                    }
+                  >
+                    Description
+                  </label>
+                  <Field
                     type="text"
                     name="description"
                     id="description"
                     placeholder="e.g. Graphic Design Service"
+                    className={
+                      errors.description && touched.description ? "error" : ""
+                    }
                   />
                 </div>
 

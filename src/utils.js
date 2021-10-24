@@ -48,6 +48,11 @@ export const formatDate = (date, formDate) => {
   }
 };
 
+export const formatDatePicker = (date) => {
+  const dateArr = date.toLocaleDateString().split("/");
+  return `${dateArr[2]}-${dateArr[0]}-${dateArr[1]}`;
+};
+
 export const validationSchema = Yup.object({
   streetAddress: Yup.string().required(),
   city: Yup.string().required(),
@@ -60,6 +65,8 @@ export const validationSchema = Yup.object({
   clientPostCode: Yup.string().required(),
   clientCountry: Yup.string().required(),
   invoiceDate: Yup.date().required(),
+  paymentTerms: Yup.string().required(),
+  description: Yup.string().required(),
 });
 
 export const initialValues = {
@@ -74,4 +81,7 @@ export const initialValues = {
   clientPostCode: "",
   clientCountry: "",
   invoiceDate: new Date(),
+  paymentTerms: "Net 1 Day",
+  description: "",
+  itemList: [{ itemName: "", quantity: "", price: "", total: "" }],
 };

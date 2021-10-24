@@ -3,7 +3,6 @@ import { formatDate } from "../../utils";
 import calendarIcon from "../../assets/images/icon-calendar.svg";
 
 const DatePickerInput = forwardRef(({ value, onClick }, ref) => {
-  console.log(value);
   return (
     <button
       ref={ref}
