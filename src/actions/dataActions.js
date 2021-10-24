@@ -10,5 +10,4 @@ export const fetchData = (url) => async (dispatch) => {
       data,
     },
   });
-  console.log(data);
 };

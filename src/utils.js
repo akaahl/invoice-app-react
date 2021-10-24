@@ -1,3 +1,5 @@
+import * as Yup from "yup";
+
 export const formatDate = (date, formDate) => {
   const convertToMonthName = (month) => {
     switch (month) {
@@ -34,7 +36,7 @@ export const formatDate = (date, formDate) => {
     const newDateArray = date
       .split("/")
       .map((num, index) => (index === 1 ? convertToMonthName(num) : num));
-    const newDateString = `${newDateArray[1]} ${newDateArray[0]}, ${newDateArray[2]}`;
+    const newDateString = `${newDateArray[1]} ${newDateArray[2]}, ${newDateArray[0]}`;
     return newDateString;
   } else {
     const newDate = date
@@ -44,4 +46,32 @@ export const formatDate = (date, formDate) => {
       .join(" ");
     return newDate;
   }
+};
+
+export const validationSchema = Yup.object({
+  streetAddress: Yup.string().required(),
+  city: Yup.string().required(),
+  postCode: Yup.string().required(),
+  country: Yup.string().required(),
+  clientName: Yup.string().required(),
+  clientEmail: Yup.string().email().required(),
+  clientStreetAddress: Yup.string().required(),
+  clientCity: Yup.string().required(),
+  clientPostCode: Yup.string().required(),
+  clientCountry: Yup.string().required(),
+  invoiceDate: Yup.date().required(),
+});
+
+export const initialValues = {
+  streetAddress: "",
+  city: "",
+  postCode: "",
+  country: "",
+  clientName: "",
+  clientEmail: "",
+  clientStreetAddress: "",
+  clientCity: "",
+  clientPostCode: "",
+  clientCountry: "",
+  invoiceDate: new Date(),
 };

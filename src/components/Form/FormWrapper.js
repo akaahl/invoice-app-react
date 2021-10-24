@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import Form from "./Form";
+import InnerForm from "./InnerForm";
 
 const FormWrapper = () => {
   return (
     <StyledFormWrapper>
-      <Form />
+      <InnerForm />
     </StyledFormWrapper>
   );
 };
