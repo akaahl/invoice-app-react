@@ -11,3 +11,24 @@ export const fetchData = (url) => async (dispatch) => {
     },
   });
 };
+
+export const updateData = (data) => async (dispatch) => {
+  dispatch({
+    type: "UPDATE_DATA",
+    payload: {
+      data,
+    },
+  });
+};
+
+export const openModal = () => async (dispatch) => {
+  dispatch({
+    type: "OPEN_MODAL",
+  });
+};
+
+export const closeModal = () => async (dispatch) => {
+  dispatch({
+    type: "CLOSE_MODAL",
+  });
+};

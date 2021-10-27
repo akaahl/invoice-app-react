@@ -1,10 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import InnerForm from "./InnerForm";
+import { useDispatch } from "react-redux";
+import { closeModal } from "../../actions/dataActions";
 
 const FormWrapper = () => {
+  const dispatch = useDispatch();
+
   return (
-    <StyledFormWrapper>
+    <StyledFormWrapper onClick={(e) => dispatch(closeModal())}>
       <InnerForm />
     </StyledFormWrapper>
   );

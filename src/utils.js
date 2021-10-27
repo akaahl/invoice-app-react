@@ -53,6 +53,51 @@ export const formatDatePicker = (date) => {
   return `${dateArr[2]}-${dateArr[0]}-${dateArr[1]}`;
 };
 
+export const randomIdGenerator = () => {
+  const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  const randomLetter = () => Math.floor(Math.random() * alphabets.length);
+  const randomNum = () => Math.floor(Math.random() * 10);
+
+  const randomId = `${alphabets[randomLetter()]}${
+    alphabets[randomLetter()]
+  }${randomNum()}${randomNum()}${randomNum()}${randomNum()}`;
+
+  return randomId;
+};
+
+export const getTotal = (arr) => {
+  return arr.reduce((acc, val) => (acc += +val.price * +val.quantity), 0);
+};
+
+export const generatePaymentTerms = (str) => {
+  switch (str) {
+    case "Net 1 Day":
+      return 1;
+    case "Net 7 Days":
+      return 7;
+    case "Net 14 Days":
+      return 14;
+    case "Net 30 Days":
+      return 30;
+    default:
+      return 1;
+  }
+};
+
+export const generatePayDue = (dateString, paymentTerm) => {
+  const dateArray = dateString.split("-");
+  const currentDate = new Date(dateArray[0], dateArray[1] - 1, dateArray[2]);
+  currentDate.setDate(currentDate.getDate() + paymentTerm);
+
+  const year = currentDate.getFullYear() + "";
+  const month = currentDate.getMonth() + 1 + "";
+  const date = currentDate.getDate() + "";
+  const output = `${year}-${month < 10 ? "0" + month : month}-${date}`;
+
+  // console.log(currentDate);
+  return output;
+};
+
 export const validationSchema = Yup.object({
   streetAddress: Yup.string().required(),
   city: Yup.string().required(),
@@ -67,6 +112,16 @@ export const validationSchema = Yup.object({
   invoiceDate: Yup.date().required(),
   paymentTerms: Yup.string().required(),
   description: Yup.string().required(),
+  itemList: Yup.array()
+    .of(
+      Yup.object({
+        itemName: Yup.string().required(),
+        quantity: Yup.number().required().positive().integer().min(0),
+        price: Yup.number().required().positive().min(0),
+        total: Yup.number().required().positive().min(0),
+      })
+    )
+    .required(),
 });
 
 export const initialValues = {
@@ -83,5 +138,5 @@ export const initialValues = {
   invoiceDate: new Date(),
   paymentTerms: "Net 1 Day",
   description: "",
-  itemList: [{ itemName: "", quantity: "", price: "", total: "" }],
+  itemList: [],
 };

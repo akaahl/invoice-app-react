@@ -5,13 +5,16 @@ import Home from "./pages/Home";
 import InvoicePage from "./pages/InvoicePage";
 import styled from "styled-components";
 import { Switch, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function App() {
+  const formModal = useSelector((state) => state.root.formModal);
+
   return (
     <StyledApp>
       <GlobalStyle />
       <Navbar />
-      <FormWrapper />
+      {formModal && <FormWrapper />}
 
       <Switch>
         <Route path="/" exact>

@@ -1,259 +1,214 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
-import plusIcon from "../../assets/images/icon-plus.svg";
-import DatePickerInput from "./DatePickerInput";
-import { ReactComponent as DeleteIcon } from "../../assets/images/icon-delete.svg";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { Formik, Form, Field, FieldArray } from "formik";
-import { initialValues, validationSchema } from "../../utils";
+import { Formik, Form } from "formik";
+import {
+  initialValues,
+  validationSchema,
+  randomIdGenerator,
+  formatDatePicker,
+  getTotal,
+  generatePayDue,
+  generatePaymentTerms,
+} from "../../utils";
 import SelectOptions from "./SelectOptions.js";
+import TextError from "./TextError";
+import InputWrapper from "./InputWrapper";
+import ItemList from "./ItemList";
+import { useDispatch } from "react-redux";
+import { closeModal, updateData } from "../../actions/dataActions";
 
 const InnerForm = () => {
+  const dispatch = useDispatch();
+  const [itemListError, setItemListError] = useState(false);
+  const mainRef = useRef().current;
+
+  const handleFormSubmit = (values) => {
+    if (!values.itemList.length) {
+      setItemListError(true);
+    } else {
+      setItemListError(false);
+    }
+  };
+
+  const handleSaveDraft = (values) => {
+    const {
+      streetAddress,
+      city,
+      postCode,
+      country,
+      clientName,
+      clientEmail,
+      clientStreetAddress,
+      clientCity,
+      clientPostCode,
+      clientCountry,
+      invoiceDate,
+      paymentTerms,
+      description,
+      itemList,
+    } = values;
+
+    const senderAddress = {
+      street: streetAddress,
+      city,
+      postCode,
+      country,
+    };
+
+    const clientAddress = {
+      street: clientStreetAddress,
+      city: clientCity,
+      postCode: clientPostCode,
+      country: clientCountry,
+    };
+
+    const newInvoice = {
+      id: randomIdGenerator(),
+      createdAt: formatDatePicker(invoiceDate),
+      paymentDue: generatePayDue(
+        formatDatePicker(invoiceDate),
+        generatePaymentTerms(paymentTerms)
+      ),
+      description,
+      paymentTerms: generatePaymentTerms(paymentTerms),
+      clientName,
+      clientEmail,
+      status: "draft",
+      senderAddress,
+      clientAddress,
+      items: itemList,
+      total: getTotal(itemList),
+    };
+
+    const invoiceStorage = JSON.parse(localStorage.getItem("invoiceStorage"));
+    // const updatedData = [...invoiceStorage, newInvoice];
+    invoiceStorage.unshift(newInvoice);
+    localStorage.setItem("invoiceStorage", JSON.stringify(invoiceStorage));
+    dispatch(updateData(invoiceStorage));
+
+    // const arr = [newInvoice].concat(invoiceStorage);
+    // const friends = [{ name: "arkam" }, { name: "jay" }, { name: "zoya" }];
+    // const newFriends = friends.unshift({ name: "kayla" });
+    // console.log(newFriends);
+  };
+
+  const handleSubmit = (values) => {
+    if (!itemListError) {
+      console.log("validated");
+    }
+  };
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
       validateOnChange={false}
+      onSubmit={(values) => handleSubmit(values)}
     >
       {(formik) => {
-        const { touched, errors, setFieldValue, values } = formik;
-        console.log(formik);
+        const { touched, errors, setFieldValue, values, isValid } = formik;
+        // console.log(formik);
+
         return (
-          <StyledForm as={Form}>
+          <StyledForm as={Form} onClick={(e) => e.stopPropagation()}>
             <header>
               <h1>Create Invoice</h1>
             </header>
 
-            <main>
+            <main ref={mainRef}>
               <fieldset className="bill-from">
                 <legend>Bill From</legend>
 
-                <div className="input-wrapper street-address">
-                  <label
-                    htmlFor="streetAddress"
-                    className={
-                      errors.streetAddress && touched.streetAddress
-                        ? "error"
-                        : ""
-                    }
-                  >
-                    Street Address
-                  </label>
-                  <Field
-                    type="text"
-                    id="streetAddress"
-                    name="streetAddress"
-                    className={
-                      errors.streetAddress && touched.streetAddress
-                        ? "error"
-                        : ""
-                    }
-                  />
-                </div>
+                <InputWrapper
+                  classname="street-address"
+                  textContent="Street Address"
+                  name="streetAddress"
+                  errors={errors}
+                  touched={touched}
+                />
 
-                <div className="input-wrapper city">
-                  <label
-                    htmlFor="city"
-                    className={errors.city && touched.city ? "error" : ""}
-                  >
-                    City
-                  </label>
-                  <Field
-                    type="text"
-                    id="city"
-                    name="city"
-                    className={errors.city && touched.city ? "error" : ""}
-                  />
-                </div>
+                <InputWrapper
+                  classname="city"
+                  textContent="City"
+                  name="city"
+                  errors={errors}
+                  touched={touched}
+                />
 
-                <div className="input-wrapper post-code">
-                  <label
-                    htmlFor="postCode"
-                    className={
-                      errors.postCode && touched.postCode ? "error" : ""
-                    }
-                  >
-                    Post Code
-                  </label>
-                  <Field
-                    type="text"
-                    id="postCode"
-                    name="postCode"
-                    className={
-                      errors.postCode && touched.postCode ? "error" : ""
-                    }
-                  />
-                </div>
+                <InputWrapper
+                  classname="post-code"
+                  textContent="Post Code"
+                  name="postCode"
+                  errors={errors}
+                  touched={touched}
+                />
 
-                <div className="input-wrapper country">
-                  <label
-                    htmlFor="country"
-                    className={errors.country && touched.country ? "error" : ""}
-                  >
-                    Country
-                  </label>
-                  <Field
-                    type="text"
-                    id="country"
-                    name="country"
-                    className={errors.country && touched.country ? "error" : ""}
-                  />
-                </div>
+                <InputWrapper
+                  classname="country"
+                  textContent="Country"
+                  name="country"
+                  errors={errors}
+                  touched={touched}
+                />
               </fieldset>
 
               <fieldset className="bill-to">
                 <legend>Bill To</legend>
 
-                <div className="input-wrapper client-name">
-                  <label
-                    htmlFor="clientName"
-                    className={
-                      errors.clientName && touched.clientName ? "error" : ""
-                    }
-                  >
-                    Client's Name
-                  </label>
-                  <Field
-                    type="text"
-                    id="clientName"
-                    name="clientName"
-                    className={
-                      errors.clientName && touched.clientName ? "error" : ""
-                    }
-                  />
-                </div>
+                <InputWrapper
+                  classname="client-name"
+                  textContent="Client's Name"
+                  name="clientName"
+                  errors={errors}
+                  touched={touched}
+                />
 
-                <div className="input-wrapper client-email">
-                  <label
-                    htmlFor="clientEmail"
-                    className={
-                      errors.clientEmail && touched.clientEmail ? "error" : ""
-                    }
-                  >
-                    Client's Email
-                  </label>
-                  <Field
-                    type="email"
-                    name="clientEmail"
-                    id="clientEmail"
-                    placeholder="e.g. email@example.com"
-                    className={
-                      errors.clientEmail && touched.clientEmail ? "error" : ""
-                    }
-                  />
-                </div>
+                <InputWrapper
+                  classname="client-email"
+                  textContent="Client's Email"
+                  name="clientEmail"
+                  errors={errors}
+                  touched={touched}
+                />
 
-                <div className="input-wrapper client-street-address">
-                  <label
-                    htmlFor="clientStreetAddress"
-                    className={
-                      errors.clientStreetAddress && touched.clientStreetAddress
-                        ? "error"
-                        : ""
-                    }
-                  >
-                    Street Address
-                  </label>
-                  <Field
-                    type="text"
-                    name="clientStreetAddress"
-                    id="clientStreetAddress"
-                    className={
-                      errors.clientStreetAddress && touched.clientStreetAddress
-                        ? "error"
-                        : ""
-                    }
-                  />
-                </div>
+                <InputWrapper
+                  classname="client-street-address"
+                  textContent="Street Address"
+                  name="clientStreetAddress"
+                  errors={errors}
+                  touched={touched}
+                />
 
-                <div className="input-wrapper client-city">
-                  <label
-                    htmlFor="clientCity"
-                    className={
-                      errors.clientCity && touched.clientCity ? "error" : ""
-                    }
-                  >
-                    City
-                  </label>
-                  <Field
-                    type="text"
-                    name="clientCity"
-                    id="clientCity"
-                    className={
-                      errors.clientCity && touched.clientCity ? "error" : ""
-                    }
-                  />
-                </div>
+                <InputWrapper
+                  classname="client-city"
+                  textContent="Client City"
+                  name="clientCity"
+                  errors={errors}
+                  touched={touched}
+                />
 
-                <div className="input-wrapper client-post-code">
-                  <label
-                    htmlFor="clientPostCode"
-                    className={
-                      errors.clientPostCode && touched.clientPostCode
-                        ? "error"
-                        : ""
-                    }
-                  >
-                    Post Code
-                  </label>
-                  <Field
-                    type="text"
-                    name="clientPostCode"
-                    id="clientPostCode"
-                    className={
-                      errors.clientPostCode && touched.clientPostCode
-                        ? "error"
-                        : ""
-                    }
-                  />
-                </div>
+                <InputWrapper
+                  classname="client-post-code"
+                  textContent="Post Code"
+                  name="clientPostCode"
+                  errors={errors}
+                  touched={touched}
+                />
 
-                <div className="input-wrapper client-country">
-                  <label
-                    htmlFor="clientCountry"
-                    className={
-                      errors.clientCountry && touched.clientCountry
-                        ? "error"
-                        : ""
-                    }
-                  >
-                    Country
-                  </label>
-                  <Field
-                    type="text"
-                    name="clientCountry"
-                    id="clientCountry"
-                    className={
-                      errors.clientCountry && touched.clientCountry
-                        ? "error"
-                        : ""
-                    }
-                  />
-                </div>
+                <InputWrapper
+                  classname="client-country"
+                  textContent="Country"
+                  name="clientCountry"
+                  errors={errors}
+                  touched={touched}
+                />
 
                 <div className="dates">
-                  <div className="input-wrapper invoice-date">
-                    <label htmlFor="invoice-date">Invoice Date</label>
-                    <Field name="invoiceDate">
-                      {({ form, field }) => {
-                        const { setFieldValue } = form;
-                        const { value } = field;
-
-                        return (
-                          <DatePicker
-                            id="invoiceDate"
-                            selected={value}
-                            onChange={(date) =>
-                              setFieldValue("invoiceDate", date)
-                            }
-                            dateFormat="yyyy/MM/dd"
-                            customInput={<DatePickerInput />}
-                          />
-                        );
-                      }}
-                    </Field>
-                  </div>
+                  <InputWrapper
+                    classname="invoice-date"
+                    textContent="Invoice Date"
+                    name="invoiceDate"
+                  />
 
                   <SelectOptions
                     values={values}
@@ -261,69 +216,59 @@ const InnerForm = () => {
                   />
                 </div>
 
-                <div className="input-wrapper description">
-                  <label
-                    htmlFor="description"
-                    className={
-                      errors.description && touched.description ? "error" : ""
-                    }
-                  >
-                    Description
-                  </label>
-                  <Field
-                    type="text"
-                    name="description"
-                    id="description"
-                    placeholder="e.g. Graphic Design Service"
-                    className={
-                      errors.description && touched.description ? "error" : ""
-                    }
-                  />
-                </div>
+                <InputWrapper
+                  classname="description"
+                  textContent="Description"
+                  name="description"
+                  errors={errors}
+                  touched={touched}
+                />
 
                 <div className="item-list-wrapper">
                   <h4>Item List</h4>
 
-                  <ul>
-                    <li>
-                      <div className="input-wrapper item-name">
-                        <label htmlFor="item-name">Item name</label>
-                        <input type="text" name="item-name" id="item-name" />
-                      </div>
+                  <ItemList
+                    errors={errors}
+                    touched={touched}
+                    setItemListError={setItemListError}
+                  />
 
-                      <div className="input-wrapper quantity">
-                        <label htmlFor="quantity">Qty.</label>
-                        <input type="text" name="quantity" id="quantity" />
-                      </div>
+                  <div className="error-messages">
+                    {itemListError && (
+                      <TextError text="At least one item must be added" />
+                    )}
 
-                      <div className="input-wrapper price">
-                        <label htmlFor="price">Price</label>
-                        <input type="text" name="price" id="price" />
-                      </div>
-
-                      <div className="input-wrapper total">
-                        <label htmlFor="total">Total</label>
-                        <span>13123</span>
-                      </div>
-
-                      <button>
-                        <DeleteIcon />
-                      </button>
-                    </li>
-                  </ul>
-
-                  <button className="add-new-btn">
-                    <img src={plusIcon} alt="plus icon" />
-                    Add New Item
-                  </button>
+                    {!isValid && <TextError text="All fields must be filled" />}
+                  </div>
                 </div>
               </fieldset>
             </main>
 
             <footer>
-              <button className="discard-btn">Discard</button>
-              <button className="draft-btn">Save as Draft</button>
-              <button className="submit-btn">Save &amp; Send</button>
+              <button
+                type="button"
+                className="discard-btn"
+                onClick={() => dispatch(closeModal())}
+              >
+                Discard
+              </button>
+              <button
+                type="button"
+                className="draft-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleSaveDraft(values);
+                }}
+              >
+                Save as Draft
+              </button>
+              <button
+                type="submit"
+                className="submit-btn"
+                onClick={(e) => handleFormSubmit(values)}
+              >
+                Save &amp; Send
+              </button>
             </footer>
           </StyledForm>
         );

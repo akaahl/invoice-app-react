@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import arrowIcon from "../../assets/images/icon-arrow-down.svg";
 import plusIcon from "../../assets/images/icon-plus.svg";
-import checkIcon from "../../assets/images/icon-check.svg";
-import { useSelector } from "react-redux";
+import { ReactComponent as CheckIcon } from "../../assets/images/icon-check.svg";
+import { useSelector, useDispatch } from "react-redux";
+import { openModal } from "../../actions/dataActions";
 
 const Header = () => {
+  const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
   const [filterStatus, setFilterStatus] = useState("all");
   const data = useSelector((state) => state.root.data);
@@ -64,7 +66,7 @@ const Header = () => {
                   checked={filterStatus === "all"}
                 />
                 <div className="custom-checkbox">
-                  <img src={checkIcon} alt="check icon" />
+                  <CheckIcon />
                 </div>
                 <span>All</span>
               </label>
@@ -79,7 +81,7 @@ const Header = () => {
                   checked={filterStatus === "paid"}
                 />
                 <div className="custom-checkbox">
-                  <img src={checkIcon} alt="check icon" />
+                  <CheckIcon />
                 </div>
                 <span>Paid</span>
               </label>
@@ -94,7 +96,7 @@ const Header = () => {
                   checked={filterStatus === "pending"}
                 />
                 <div className="custom-checkbox">
-                  <img src={checkIcon} alt="check icon" />
+                  <CheckIcon />
                 </div>
                 <span>Pending</span>
               </label>
@@ -109,7 +111,7 @@ const Header = () => {
                   checked={filterStatus === "draft"}
                 />
                 <div className="custom-checkbox">
-                  <img src={checkIcon} alt="check icon" />
+                  <CheckIcon />
                 </div>
                 <span>Draft</span>
               </label>
@@ -117,7 +119,10 @@ const Header = () => {
           )}
         </div>
 
-        <button className="add-invoice-btn">
+        <button
+          className="add-invoice-btn"
+          onClick={() => dispatch(openModal())}
+        >
           <div className="icon">
             <img src={plusIcon} alt="plus icon" />
           </div>
@@ -205,7 +210,7 @@ const StyledHeader = styled.header`
             &:checked ~ .custom-checkbox {
               background-color: #7c5dfa;
 
-              img {
+              svg {
                 transform: scale(1);
               }
             }
@@ -223,9 +228,13 @@ const StyledHeader = styled.header`
             margin-right: 15px;
             transition: all 0.2s ease-in-out;
 
-            img {
+            svg {
               transform: scale(0);
               transition: all 0.4s ease-in-out;
+
+              path {
+                stroke: #ffffff;
+              }
             }
           }
 

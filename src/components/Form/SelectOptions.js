@@ -14,8 +14,10 @@ const SelectOptions = ({ values, setFieldValue }) => {
 
   const closeTermsModal = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setTermsModal(false);
     document.removeEventListener("click", closeTermsModal);
+    console.log("clicked");
   };
 
   const handleTermsModal = (e) => {
@@ -44,6 +46,7 @@ const SelectOptions = ({ values, setFieldValue }) => {
               onClick={(e) => {
                 const textContent = e.target.textContent;
                 handlePaymentTerms(paymentTerms, setFieldValue, textContent);
+                setTermsModal(false);
               }}
               className={paymentTerms === "Net 1 Day" ? "selected" : ""}
             >
@@ -54,6 +57,7 @@ const SelectOptions = ({ values, setFieldValue }) => {
               onClick={(e) => {
                 const textContent = e.target.textContent;
                 handlePaymentTerms(paymentTerms, setFieldValue, textContent);
+                setTermsModal(false);
               }}
               className={paymentTerms === "Net 7 Days" ? "selected" : ""}
             >
@@ -64,6 +68,7 @@ const SelectOptions = ({ values, setFieldValue }) => {
               onClick={(e) => {
                 const textContent = e.target.textContent;
                 handlePaymentTerms(paymentTerms, setFieldValue, textContent);
+                setTermsModal(false);
               }}
               className={paymentTerms === "Net 14 Days" ? "selected" : ""}
             >
@@ -74,6 +79,7 @@ const SelectOptions = ({ values, setFieldValue }) => {
               onClick={(e) => {
                 const textContent = e.target.textContent;
                 handlePaymentTerms(paymentTerms, setFieldValue, textContent);
+                setTermsModal(false);
               }}
               className={paymentTerms === "Net 30 Days" ? "selected" : ""}
             >

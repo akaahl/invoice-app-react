@@ -9,6 +9,15 @@ const dataReducer = (state = initialState, action) => {
     case "FETCH_DATA":
       return { ...state, data: action.payload.data };
 
+    case "UPDATE_DATA":
+      return { ...state, data: action.payload.data };
+
+    case "OPEN_MODAL":
+      return { ...state, formModal: true };
+
+    case "CLOSE_MODAL":
+      return { ...state, formModal: false };
+
     default:
       return { ...state };
   }
