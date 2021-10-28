@@ -8,7 +8,12 @@ const FormWrapper = () => {
   const dispatch = useDispatch();
 
   return (
-    <StyledFormWrapper onClick={(e) => dispatch(closeModal())}>
+    <StyledFormWrapper
+      onClick={(e) => {
+        dispatch(closeModal());
+        document.body.style.overflowY = "scroll";
+      }}
+    >
       <InnerForm />
     </StyledFormWrapper>
   );

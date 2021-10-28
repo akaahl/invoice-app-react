@@ -21,9 +21,12 @@ export const updateData = (data) => async (dispatch) => {
   });
 };
 
-export const openModal = () => async (dispatch) => {
+export const openModal = (invoiceId) => async (dispatch) => {
   dispatch({
     type: "OPEN_MODAL",
+    payload: {
+      id: invoiceId ? invoiceId : null,
+    },
   });
 };
 

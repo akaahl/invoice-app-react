@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Field } from "formik";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -12,7 +12,40 @@ const InputWrapper = ({
   touched,
   isFieldArray,
   index,
+  value,
+  selectedDate,
+  setFieldValue,
+  selectedItems,
 }) => {
+  const formatDate = (date) => {
+    const dateArr = date.split("-");
+    const formattedDate = new Date(dateArr[0], dateArr[1] - 1, dateArr[2]);
+    return formattedDate;
+  };
+
+  // console.log(setFieldValue);
+  useEffect(() => {
+    if (setFieldValue && selectedItems) {
+      setFieldValue(`itemList[${index}].${name}`, selectedItems[index][name]);
+    }
+
+    if (value && setFieldValue) {
+      setFieldValue(name, value);
+    }
+
+    if (selectedDate && setFieldValue) {
+      setFieldValue(name, formatDate(selectedDate));
+    }
+  }, [
+    setFieldValue,
+    selectedDate,
+    name,
+    value,
+    selectedItems,
+    isFieldArray,
+    index,
+  ]);
+
   return (
     <div className={`input-wrapper ${classname}`}>
       {name === "invoiceDate" || isFieldArray ? (

@@ -16,42 +16,48 @@ const Invoices = () => {
 
   return (
     <StyledList>
-      {data.map(({ id, paymentDue, clientName, total, status }) => (
-        <StyledInvoice
-          key={uuidv4()}
-          status={status}
-          onClick={(e) => {
-            e.preventDefault();
-            handleClick(id);
-          }}
-        >
-          <div className="left-side">
-            <p className="id">
-              <span>#</span>
-              {id}
-            </p>
-
-            <p className="due-date">Due {formatDate(paymentDue)}</p>
-            <p className="name">{clientName}</p>
-          </div>
-
-          <div className="right-side">
-            <p className="amount">
-              <span>&pound;</span>
-              {total.toLocaleString()}
-            </p>
-
-            <div className="status-wrapper">
-              <div className="circle"></div>
-              <p className="status">
-                {status[0].toUpperCase() + status.slice(1)}
+      {data.map(
+        ({ id, paymentDue, clientName, total, status, clientAddress }) => (
+          <StyledInvoice
+            key={uuidv4()}
+            status={status}
+            onClick={(e) => {
+              e.preventDefault();
+              handleClick(id);
+            }}
+          >
+            <div className="left-side">
+              <p className="id">
+                <span>#</span>
+                {id}
               </p>
+
+              <p className="due-date">Due {formatDate(paymentDue)}</p>
+              <p className="name">{clientName}</p>
             </div>
 
-            <img src={arrowIcon} alt="arrow icon" />
-          </div>
-        </StyledInvoice>
-      ))}
+            <div className="right-side">
+              <p className="amount">
+                <span>
+                  {clientAddress.country === "United States of America"
+                    ? "$"
+                    : "£"}
+                </span>
+                {total.toLocaleString()}
+              </p>
+
+              <div className="status-wrapper">
+                <div className="circle"></div>
+                <p className="status">
+                  {status[0].toUpperCase() + status.slice(1)}
+                </p>
+              </div>
+
+              <img src={arrowIcon} alt="arrow icon" />
+            </div>
+          </StyledInvoice>
+        )
+      )}
     </StyledList>
   );
 };

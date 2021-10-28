@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import arrowIcon from "../../assets/images/icon-arrow-down.svg";
 import checkIcon from "../../assets/images/icon-check.svg";
+import { generatePaymentTerms } from "../../utils";
 
-const SelectOptions = ({ values, setFieldValue }) => {
+const SelectOptions = ({ values, setFieldValue, selectedPaymentTerms }) => {
   const { paymentTerms } = values;
   const [termsModal, setTermsModal] = useState(false);
+
+  useEffect(() => {
+    if (selectedPaymentTerms)
+      setFieldValue("paymentTerms", generatePaymentTerms(selectedPaymentTerms));
+  }, [selectedPaymentTerms, setFieldValue]);
 
   const handlePaymentTerms = (value, setFieldValue, textContent) => {
     if (textContent !== value) {
@@ -17,7 +23,6 @@ const SelectOptions = ({ values, setFieldValue }) => {
     e.stopPropagation();
     setTermsModal(false);
     document.removeEventListener("click", closeTermsModal);
-    console.log("clicked");
   };
 
   const handleTermsModal = (e) => {

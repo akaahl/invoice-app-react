@@ -1,7 +1,10 @@
+const invoiceStorage = JSON.parse(localStorage.getItem("invoiceStorage"));
+
 const initialState = {
-  data: [],
+  data: invoiceStorage || [],
   filterModal: false,
   formModal: false,
+  invoiceId: null,
 };
 
 const dataReducer = (state = initialState, action) => {
@@ -13,10 +16,14 @@ const dataReducer = (state = initialState, action) => {
       return { ...state, data: action.payload.data };
 
     case "OPEN_MODAL":
-      return { ...state, formModal: true };
+      return {
+        ...state,
+        formModal: true,
+        invoiceId: action.payload.id,
+      };
 
     case "CLOSE_MODAL":
-      return { ...state, formModal: false };
+      return { ...state, formModal: false, invoiceId: null };
 
     default:
       return { ...state };

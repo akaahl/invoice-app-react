@@ -13,8 +13,6 @@ const InvoicePage = () => {
   const data = useSelector((state) => state.root.data);
   const selectedInvoice = data.filter((invoice) => invoice.id === id)[0];
 
-  console.log(selectedInvoice);
-
   useEffect(() => {
     window.scrollTo({ top: 0 });
   }, []);
@@ -28,7 +26,7 @@ const InvoicePage = () => {
         </button>
       </nav>
 
-      <Header selectedInvoice={selectedInvoice} />
+      <Header selectedInvoice={selectedInvoice} invoiceId={id} />
       <InvoiceDetails selectedInvoice={selectedInvoice} />
     </StyledWrapper>
   );

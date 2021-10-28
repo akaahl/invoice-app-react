@@ -1,8 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import { updateData, openModal } from "../../actions/dataActions";
+import DeleteModal from "./DeleteModal";
 
-const Header = ({ selectedInvoice }) => {
-  const { status } = selectedInvoice;
+const Header = ({ selectedInvoice, invoiceId }) => {
+  const [deleteModal, setDeleteModal] = useState(false);
+  const { status, id } = selectedInvoice;
+  const dispatch = useDispatch();
+
+  const handleMarkAsPaid = (e) => {
+    e.preventDefault();
+
+    const invoiceStorage = JSON.parse(localStorage.getItem("invoiceStorage"));
+    const newInvoices = invoiceStorage.map((invoice) =>
+      invoice.id === id ? { ...invoice, status: "paid" } : invoice
+    );
+    localStorage.setItem("invoiceStorage", JSON.stringify(newInvoices));
+    dispatch(updateData(newInvoices));
+    console.log(newInvoices);
+  };
   return (
     <StyledHeader status={status}>
       <div className="left-side">
@@ -10,18 +27,33 @@ const Header = ({ selectedInvoice }) => {
 
         <div className="status-wrapper">
           <div className="circle"></div>
-          <p className="status-type">Paid</p>
+          <p className="status-type">
+            {status[0].toUpperCase() + status.substring(1)}
+          </p>
         </div>
       </div>
 
       <div className="right-side">
-        <button className="edit">Edit</button>
-        <button className="delete">Delete</button>
-        {status === "pending" ||
-          (status === "draft" && (
-            <button className="mark-as-paid">Mark as Paid</button>
-          ))}
+        <button className="edit" onClick={() => dispatch(openModal(invoiceId))}>
+          Edit
+        </button>
+        <button
+          className="delete"
+          onClick={() => {
+            setDeleteModal(true);
+            document.body.style.overflowY = "hidden";
+          }}
+        >
+          Delete
+        </button>
+        {status === "pending" || status === "draft" ? (
+          <button className="mark-as-paid" onClick={handleMarkAsPaid}>
+            Mark as Paid
+          </button>
+        ) : null}
       </div>
+
+      {deleteModal && <DeleteModal setDeleteModal={setDeleteModal} id={id} />}
     </StyledHeader>
   );
 };

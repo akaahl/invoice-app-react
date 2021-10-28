@@ -1,10 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FieldArray } from "formik";
 import { ReactComponent as DeleteIcon } from "../../assets/images/icon-delete.svg";
 import plusIcon from "../../assets/images/icon-plus.svg";
 import InputWrapper from "./InputWrapper";
 
-const ItemList = ({ errors, touched, setItemListError }) => {
+const ItemList = ({
+  errors,
+  touched,
+  setItemListError,
+  selectedItems,
+  setFieldValue,
+}) => {
+  useEffect(() => {
+    if (selectedItems) {
+      setFieldValue("itemList", selectedItems);
+    }
+  }, [selectedItems, setFieldValue]);
   return (
     <FieldArray name="itemList">
       {(fieldArrayProps) => {
@@ -26,10 +37,11 @@ const ItemList = ({ errors, touched, setItemListError }) => {
                         isFieldArray={true}
                         classname="item-name"
                         textContent="Item name"
-                        name="itemName"
+                        name="name"
                         errors={errors}
                         touched={touched}
                         index={index}
+                        selectedItems={selectedItems}
                       />
 
                       <InputWrapper
@@ -40,6 +52,7 @@ const ItemList = ({ errors, touched, setItemListError }) => {
                         errors={errors}
                         touched={touched}
                         index={index}
+                        selectedItems={selectedItems}
                       />
 
                       <InputWrapper
@@ -50,6 +63,7 @@ const ItemList = ({ errors, touched, setItemListError }) => {
                         errors={errors}
                         touched={touched}
                         index={index}
+                        selectedItems={selectedItems}
                       />
 
                       <div className="input-wrapper total">
@@ -71,7 +85,7 @@ const ItemList = ({ errors, touched, setItemListError }) => {
               className="add-new-btn"
               onClick={() => {
                 push({
-                  itemName: "",
+                  name: "",
                   quantity: "",
                   price: "",
                   total: 0,

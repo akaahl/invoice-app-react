@@ -9,28 +9,30 @@ import {
   getTotal,
   generatePayDue,
   generatePaymentTerms,
+  compareDate,
 } from "../../utils";
 import SelectOptions from "./SelectOptions.js";
 import TextError from "./TextError";
 import InputWrapper from "./InputWrapper";
 import ItemList from "./ItemList";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { closeModal, updateData } from "../../actions/dataActions";
 
 const InnerForm = () => {
   const dispatch = useDispatch();
   const [itemListError, setItemListError] = useState(false);
   const mainRef = useRef().current;
+  const params = useSelector((state) => state.root.invoiceId);
+  const selectedInvoice = JSON.parse(
+    localStorage.getItem("invoiceStorage")
+  ).filter((invoice) => invoice.id === params)[0];
 
-  const handleFormSubmit = (values) => {
-    if (!values.itemList.length) {
-      setItemListError(true);
-    } else {
-      setItemListError(false);
-    }
-  };
+  // console.log(selectedInvoice);
 
-  const handleSaveDraft = (values) => {
+  const handleFormSubmit = (values) =>
+    !values.itemList.length ? setItemListError(true) : setItemListError(false);
+
+  const handleFinalizedSubmit = (values, send) => {
     const {
       streetAddress,
       city,
@@ -62,8 +64,13 @@ const InnerForm = () => {
       country: clientCountry,
     };
 
+    const updatedItemList = itemList.map((item) => ({
+      ...item,
+      total: item.price * item.quantity,
+    }));
+
     const newInvoice = {
-      id: randomIdGenerator(),
+      id: params ? params : randomIdGenerator(),
       createdAt: formatDatePicker(invoiceDate),
       paymentDue: generatePayDue(
         formatDatePicker(invoiceDate),
@@ -73,28 +80,44 @@ const InnerForm = () => {
       paymentTerms: generatePaymentTerms(paymentTerms),
       clientName,
       clientEmail,
-      status: "draft",
+      status: send
+        ? compareDate(
+            generatePayDue(
+              formatDatePicker(invoiceDate),
+              generatePaymentTerms(paymentTerms)
+            ),
+            new Date()
+          )
+        : "draft",
       senderAddress,
       clientAddress,
-      items: itemList,
+      items: updatedItemList,
       total: getTotal(itemList),
     };
 
     const invoiceStorage = JSON.parse(localStorage.getItem("invoiceStorage"));
-    // const updatedData = [...invoiceStorage, newInvoice];
-    invoiceStorage.unshift(newInvoice);
-    localStorage.setItem("invoiceStorage", JSON.stringify(invoiceStorage));
-    dispatch(updateData(invoiceStorage));
 
-    // const arr = [newInvoice].concat(invoiceStorage);
-    // const friends = [{ name: "arkam" }, { name: "jay" }, { name: "zoya" }];
-    // const newFriends = friends.unshift({ name: "kayla" });
-    // console.log(newFriends);
+    if (!params) {
+      invoiceStorage.unshift(newInvoice);
+      localStorage.setItem("invoiceStorage", JSON.stringify(invoiceStorage));
+      dispatch(updateData(invoiceStorage));
+      dispatch(closeModal());
+      document.body.style.overflowY = "scroll";
+    } else {
+      const newInvoiceStorage = invoiceStorage.map((invoice) =>
+        invoice.id === params ? { ...newInvoice } : invoice
+      );
+      localStorage.setItem("invoiceStorage", JSON.stringify(newInvoiceStorage));
+      dispatch(updateData(newInvoiceStorage));
+      dispatch(closeModal());
+
+      // console.log(newInvoiceStorage);
+    }
   };
 
   const handleSubmit = (values) => {
     if (!itemListError) {
-      console.log("validated");
+      handleFinalizedSubmit(values, true);
     }
   };
 
@@ -110,7 +133,11 @@ const InnerForm = () => {
         // console.log(formik);
 
         return (
-          <StyledForm as={Form} onClick={(e) => e.stopPropagation()}>
+          <StyledForm
+            as={Form}
+            onClick={(e) => e.stopPropagation()}
+            params={params}
+          >
             <header>
               <h1>Create Invoice</h1>
             </header>
@@ -125,6 +152,10 @@ const InnerForm = () => {
                   name="streetAddress"
                   errors={errors}
                   touched={touched}
+                  value={
+                    selectedInvoice ? selectedInvoice.senderAddress.street : ""
+                  }
+                  setFieldValue={setFieldValue}
                 />
 
                 <InputWrapper
@@ -133,6 +164,10 @@ const InnerForm = () => {
                   name="city"
                   errors={errors}
                   touched={touched}
+                  value={
+                    selectedInvoice ? selectedInvoice.senderAddress.city : ""
+                  }
+                  setFieldValue={setFieldValue}
                 />
 
                 <InputWrapper
@@ -141,6 +176,12 @@ const InnerForm = () => {
                   name="postCode"
                   errors={errors}
                   touched={touched}
+                  value={
+                    selectedInvoice
+                      ? selectedInvoice.senderAddress.postCode
+                      : ""
+                  }
+                  setFieldValue={setFieldValue}
                 />
 
                 <InputWrapper
@@ -149,6 +190,10 @@ const InnerForm = () => {
                   name="country"
                   errors={errors}
                   touched={touched}
+                  value={
+                    selectedInvoice ? selectedInvoice.senderAddress.country : ""
+                  }
+                  setFieldValue={setFieldValue}
                 />
               </fieldset>
 
@@ -161,6 +206,8 @@ const InnerForm = () => {
                   name="clientName"
                   errors={errors}
                   touched={touched}
+                  value={selectedInvoice ? selectedInvoice.clientName : ""}
+                  setFieldValue={setFieldValue}
                 />
 
                 <InputWrapper
@@ -169,6 +216,8 @@ const InnerForm = () => {
                   name="clientEmail"
                   errors={errors}
                   touched={touched}
+                  value={selectedInvoice ? selectedInvoice.clientEmail : ""}
+                  setFieldValue={setFieldValue}
                 />
 
                 <InputWrapper
@@ -177,6 +226,10 @@ const InnerForm = () => {
                   name="clientStreetAddress"
                   errors={errors}
                   touched={touched}
+                  value={
+                    selectedInvoice ? selectedInvoice.clientAddress.street : ""
+                  }
+                  setFieldValue={setFieldValue}
                 />
 
                 <InputWrapper
@@ -185,6 +238,10 @@ const InnerForm = () => {
                   name="clientCity"
                   errors={errors}
                   touched={touched}
+                  value={
+                    selectedInvoice ? selectedInvoice.clientAddress.city : ""
+                  }
+                  setFieldValue={setFieldValue}
                 />
 
                 <InputWrapper
@@ -193,6 +250,12 @@ const InnerForm = () => {
                   name="clientPostCode"
                   errors={errors}
                   touched={touched}
+                  value={
+                    selectedInvoice
+                      ? selectedInvoice.clientAddress.postCode
+                      : ""
+                  }
+                  setFieldValue={setFieldValue}
                 />
 
                 <InputWrapper
@@ -201,6 +264,10 @@ const InnerForm = () => {
                   name="clientCountry"
                   errors={errors}
                   touched={touched}
+                  value={
+                    selectedInvoice ? selectedInvoice.clientAddress.country : ""
+                  }
+                  setFieldValue={setFieldValue}
                 />
 
                 <div className="dates">
@@ -208,11 +275,18 @@ const InnerForm = () => {
                     classname="invoice-date"
                     textContent="Invoice Date"
                     name="invoiceDate"
+                    selectedDate={
+                      selectedInvoice ? selectedInvoice.createdAt : ""
+                    }
+                    // setFieldValue={setFieldValue}
                   />
 
                   <SelectOptions
                     values={values}
                     setFieldValue={setFieldValue}
+                    selectedPaymentTerms={
+                      selectedInvoice ? selectedInvoice.paymentTerms : ""
+                    }
                   />
                 </div>
 
@@ -222,6 +296,8 @@ const InnerForm = () => {
                   name="description"
                   errors={errors}
                   touched={touched}
+                  value={selectedInvoice ? selectedInvoice.description : ""}
+                  setFieldValue={setFieldValue}
                 />
 
                 <div className="item-list-wrapper">
@@ -231,6 +307,8 @@ const InnerForm = () => {
                     errors={errors}
                     touched={touched}
                     setItemListError={setItemListError}
+                    selectedItems={selectedInvoice ? selectedInvoice.items : ""}
+                    setFieldValue={setFieldValue}
                   />
 
                   <div className="error-messages">
@@ -248,7 +326,10 @@ const InnerForm = () => {
               <button
                 type="button"
                 className="discard-btn"
-                onClick={() => dispatch(closeModal())}
+                onClick={() => {
+                  dispatch(closeModal());
+                  document.body.style.overflowY = "scroll";
+                }}
               >
                 Discard
               </button>
@@ -257,7 +338,7 @@ const InnerForm = () => {
                 className="draft-btn"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleSaveDraft(values);
+                  handleFinalizedSubmit(values);
                 }}
               >
                 Save as Draft
@@ -268,6 +349,24 @@ const InnerForm = () => {
                 onClick={(e) => handleFormSubmit(values)}
               >
                 Save &amp; Send
+              </button>
+
+              <button
+                type="button"
+                className="cancel-btn"
+                onClick={() => {
+                  dispatch(closeModal());
+                  document.body.style.overflowY = "scroll";
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="save-changes-btn"
+                type="submit"
+                onClick={() => handleFormSubmit(values)}
+              >
+                Save Changes
               </button>
             </footer>
           </StyledForm>
@@ -624,7 +723,8 @@ const StyledForm = styled.form`
 
   footer {
     margin-top: 40px;
-    display: grid;
+    display: ${({ params }) => (params ? "flex" : "grid")};
+    justify-content: ${({ params }) => (params ? "flex-end" : "")};
     grid-template-areas: "discard . . . . . draft submit";
 
     button {
@@ -638,6 +738,7 @@ const StyledForm = styled.form`
       transition: all 0.3s ease-in-out;
 
       &.discard-btn {
+        display: ${({ params }) => (params ? "none" : "block")};
         grid-area: discard;
         color: #7e88c3;
 
@@ -647,6 +748,7 @@ const StyledForm = styled.form`
       }
 
       &.draft-btn {
+        display: ${({ params }) => (params ? "none" : "block")};
         grid-area: draft;
         margin-right: 10px;
         background-color: #363b53;
@@ -658,7 +760,30 @@ const StyledForm = styled.form`
       }
 
       &.submit-btn {
+        display: ${({ params }) => (params ? "none" : "block")};
         grid-area: submit;
+        background-color: #7c5dfa;
+        color: #ffffff;
+
+        &:hover {
+          background-color: #9277ff;
+        }
+      }
+
+      &.cancel-btn {
+        display: ${({ params }) => (params ? "block" : "none")};
+        margin-right: 15px;
+        padding: 15px 25px;
+        color: #7c5dfa;
+
+        &:hover {
+          background-color: #dfe3fa;
+        }
+      }
+
+      &.save-changes-btn {
+        display: ${({ params }) => (params ? "block" : "none")};
+        padding: 15px 25px;
         background-color: #7c5dfa;
         color: #ffffff;
 

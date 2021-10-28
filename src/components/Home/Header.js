@@ -121,7 +121,10 @@ const Header = () => {
 
         <button
           className="add-invoice-btn"
-          onClick={() => dispatch(openModal())}
+          onClick={() => {
+            dispatch(openModal());
+            document.body.style.overflowY = "hidden";
+          }}
         >
           <div className="icon">
             <img src={plusIcon} alt="plus icon" />

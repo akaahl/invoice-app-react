@@ -73,12 +73,20 @@ export const generatePaymentTerms = (str) => {
   switch (str) {
     case "Net 1 Day":
       return 1;
+    case 1:
+      return "Net 1 Day";
     case "Net 7 Days":
       return 7;
+    case 7:
+      return "Net 7 Days";
     case "Net 14 Days":
       return 14;
+    case 14:
+      return "Net 14 Days";
     case "Net 30 Days":
       return 30;
+    case 30:
+      return "Net 30 Days";
     default:
       return 1;
   }
@@ -98,6 +106,13 @@ export const generatePayDue = (dateString, paymentTerm) => {
   return output;
 };
 
+export const compareDate = (paymentDue, today) => {
+  const dueArr = paymentDue.split("-");
+  const dueDate = new Date(dueArr[0], dueArr[1] - 1, dueArr[2]);
+
+  return dueDate >= today ? "pending" : "paid";
+};
+
 export const validationSchema = Yup.object({
   streetAddress: Yup.string().required(),
   city: Yup.string().required(),
@@ -115,7 +130,7 @@ export const validationSchema = Yup.object({
   itemList: Yup.array()
     .of(
       Yup.object({
-        itemName: Yup.string().required(),
+        name: Yup.string().required(),
         quantity: Yup.number().required().positive().integer().min(0),
         price: Yup.number().required().positive().min(0),
         total: Yup.number().required().positive().min(0),

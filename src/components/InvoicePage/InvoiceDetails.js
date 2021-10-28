@@ -80,8 +80,18 @@ const InvoiceDetails = ({ selectedInvoice }) => {
               <li className="individual-item" key={uuidv4()}>
                 <p className="name">{name}</p>
                 <p className="quantity">{quantity}</p>
-                <p className="price">&pound;{price.toLocaleString()}</p>
-                <p className="total">&pound;{total.toLocaleString()}</p>
+                <p className="price">
+                  {clientAddress.country === "United States of America"
+                    ? "$"
+                    : "£"}
+                  {price.toLocaleString()}
+                </p>
+                <p className="total">
+                  {clientAddress.country === "United States of America"
+                    ? "$"
+                    : "£"}
+                  {total.toLocaleString()}
+                </p>
               </li>
             ))}
           </ul>
@@ -89,7 +99,10 @@ const InvoiceDetails = ({ selectedInvoice }) => {
 
         <div className="amount-due">
           <p className="due">Amount Due</p>
-          <h2 className="grand-total">&pound;{total.toLocaleString()}</h2>
+          <h2 className="grand-total">
+            {clientAddress.country === "United States of America" ? "$" : "£"}
+            {total.toLocaleString()}
+          </h2>
         </div>
       </div>
     </StyledWrapper>

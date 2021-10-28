@@ -3,15 +3,20 @@ import styled from "styled-components";
 import Header from "../components/Home/Header";
 import Invoices from "../components/Home/Invoices";
 import { useDispatch } from "react-redux";
-import { fetchData } from "../actions/dataActions";
+import { fetchData, updateData } from "../actions/dataActions";
 
 const Home = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     const dataUrl = "data.json";
+    const invoiceStorage = JSON.parse(localStorage.getItem("invoiceStorage"));
 
-    dispatch(fetchData(dataUrl));
+    if (invoiceStorage) {
+      dispatch(updateData(invoiceStorage));
+    } else {
+      dispatch(fetchData(dataUrl));
+    }
   }, [dispatch]);
   return (
     <StyledHome>
