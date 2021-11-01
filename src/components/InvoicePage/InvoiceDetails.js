@@ -1,7 +1,7 @@
-import React from "react";
-import styled from "styled-components";
-import { formatDate } from "../../utils";
-import { v4 as uuidv4 } from "uuid";
+import React from 'react';
+import styled from 'styled-components';
+import { formatDate } from '../../utils';
+import { v4 as uuidv4 } from 'uuid';
 
 const InvoiceDetails = ({ selectedInvoice }) => {
   const {
@@ -81,15 +81,15 @@ const InvoiceDetails = ({ selectedInvoice }) => {
                 <p className="name">{name}</p>
                 <p className="quantity">{quantity}</p>
                 <p className="price">
-                  {clientAddress.country === "United States of America"
-                    ? "$"
-                    : "£"}
+                  {clientAddress.country === 'United States of America'
+                    ? '$'
+                    : '£'}
                   {price.toLocaleString()}
                 </p>
                 <p className="total">
-                  {clientAddress.country === "United States of America"
-                    ? "$"
-                    : "£"}
+                  {clientAddress.country === 'United States of America'
+                    ? '$'
+                    : '£'}
                   {total.toLocaleString()}
                 </p>
               </li>
@@ -100,7 +100,7 @@ const InvoiceDetails = ({ selectedInvoice }) => {
         <div className="amount-due">
           <p className="due">Amount Due</p>
           <h2 className="grand-total">
-            {clientAddress.country === "United States of America" ? "$" : "£"}
+            {clientAddress.country === 'United States of America' ? '$' : '£'}
             {total.toLocaleString()}
           </h2>
         </div>
@@ -112,10 +112,11 @@ const InvoiceDetails = ({ selectedInvoice }) => {
 export default InvoiceDetails;
 
 const StyledWrapper = styled.section`
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.invoice};
   margin-top: 30px;
   padding: 25px;
   border-radius: 8px;
+  transition: background-color 0.2s ease-in-out;
 
   .top {
     display: flex;
@@ -125,6 +126,8 @@ const StyledWrapper = styled.section`
     .left-side {
       h2 {
         font-size: 18px;
+        color: ${({ theme }) => theme.font};
+        transition: color 0.2s ease-in-out;
 
         span {
           color: #7e88c3;
@@ -134,15 +137,17 @@ const StyledWrapper = styled.section`
       .description {
         margin-top: 5px;
         font-size: 12px;
-        color: #888eb0;
+        color: ${({ theme }) => theme.text};
+        transition: color 0.2s ease-in-out;
       }
     }
 
     .right-side {
       p {
         font-size: 12px;
-        color: #888eb0;
+        color: ${({ theme }) => theme.text};
         text-align: right;
+        transition: color 0.2s ease-in-out;
 
         &:not(:first-child) {
           margin-top: 3px;
@@ -159,7 +164,7 @@ const StyledWrapper = styled.section`
 
     .dates {
       height: auto;
-      min-height: 150px;
+      min-height: 130px;
       width: 33%;
       display: flex;
       flex-direction: column;
@@ -167,12 +172,15 @@ const StyledWrapper = styled.section`
 
       p {
         font-size: 12px;
-        color: #888eb0;
+        color: ${({ theme }) => theme.text};
+        transition: color 0.2s ease-in-out;
       }
 
       h2 {
         margin-top: 10px;
         font-size: 15px;
+        color: ${({ theme }) => theme.font};
+        transition: color 0.2s ease-in-out;
       }
     }
 
@@ -180,8 +188,9 @@ const StyledWrapper = styled.section`
       width: 33%;
 
       p {
-        color: #888eb0;
+        color: ${({ theme }) => theme.text};
         font-size: 12px;
+        transition: color 0.2s ease-in-out;
 
         &.client-street-address {
           margin-top: 10px;
@@ -197,6 +206,8 @@ const StyledWrapper = styled.section`
       h2 {
         margin-top: 10px;
         font-size: 15px;
+        color: ${({ theme }) => theme.font};
+        transition: color 0.2s ease-in-out;
       }
     }
 
@@ -204,14 +215,17 @@ const StyledWrapper = styled.section`
       width: 33%;
 
       p {
-        color: #888eb0;
+        color: ${({ theme }) => theme.text};
         font-size: 12px;
+        transition: color 0.2s ease-in-out;
       }
 
       h2 {
         margin-top: 10px;
         font-size: 15px;
         word-wrap: break-word;
+        color: ${({ theme }) => theme.font};
+        transition: color 0.2s ease-in-out;
       }
     }
   }
@@ -227,13 +241,16 @@ const StyledWrapper = styled.section`
       display: flex;
       flex-direction: column;
       padding: 40px;
+      background-color: ${({ theme }) => theme.status};
+      transition: background-color 0.2s ease-in-out;
 
       .header-labels {
         display: flex;
 
         p {
-          color: #888eb0;
+          color: ${({ theme }) => theme.text};
           font-size: 12px;
+          transition: color 0.2s ease-in-out;
 
           &.name {
             flex: 0.8;
@@ -266,13 +283,13 @@ const StyledWrapper = styled.section`
           }
 
           p {
-            color: #888eb0;
+            color: ${({ theme }) => theme.font};
             font-size: 12px;
             font-weight: 700;
+            transition: color 0.2s ease-in-out;
 
             &.name {
               flex: 0.8;
-              color: #000000;
             }
 
             &.quantity,
@@ -284,7 +301,6 @@ const StyledWrapper = styled.section`
             &.total {
               flex: 0.8;
               text-align: right;
-              color: #000000;
             }
           }
         }
@@ -293,10 +309,11 @@ const StyledWrapper = styled.section`
 
     .amount-due {
       padding: 30px 40px;
-      background-color: #373b53;
+      background-color: ${({ theme }) => theme.amountBg};
       display: flex;
       align-items: center;
       justify-content: space-between;
+      transition: background-color 0.2s ease-in-out;
 
       p {
         font-size: 12px;
@@ -308,6 +325,168 @@ const StyledWrapper = styled.section`
         font-size: 18px;
         color: #ffffff;
         font-weight: 700;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .top {
+      flex-direction: column;
+      align-items: initial;
+
+      .right-side {
+        margin-top: 50px;
+        p {
+          text-align: left;
+        }
+      }
+    }
+
+    .mid {
+      margin-top: 50px;
+      display: grid;
+      justify-content: initial;
+      grid-template-areas:
+        'dates bill'
+        'sent .';
+
+      .dates,
+      .billing-details,
+      .sent-details {
+        width: 100%;
+      }
+
+      .dates {
+        grid-area: dates;
+      }
+
+      .billing-details {
+        grid-area: bill;
+      }
+
+      .sent-details {
+        grid-area: sent;
+      }
+
+      .sent-details {
+        margin-top: 70px;
+      }
+    }
+
+    .bottom {
+      .item-labels {
+        padding: 25px;
+      }
+
+      .amount-due {
+        padding: 25px;
+      }
+    }
+  }
+
+  @media (max-width: 425px) {
+    padding: 15px;
+
+    .top {
+      .left-side {
+        h2 {
+          font-size: 14px;
+        }
+
+        p {
+          font-size: 10px;
+        }
+      }
+
+      .right-side {
+        p {
+          font-size: 10px;
+        }
+      }
+    }
+
+    .mid {
+      display: flex;
+      flex-direction: column;
+
+      .dates {
+        flex-direction: row;
+        min-height: auto;
+
+        .invoice-date,
+        .payment-due {
+          h2 {
+            font-size: 14px;
+          }
+
+          p {
+            font-size: 10px;
+          }
+        }
+      }
+
+      .billing-details {
+        margin-top: 40px;
+
+        h2 {
+          font-size: 14px;
+        }
+
+        p {
+          font-size: 10px;
+        }
+      }
+
+      .sent-details {
+        margin-top: 40px;
+
+        h2 {
+          font-size: 14px;
+        }
+
+        p {
+          font-size: 10px;
+        }
+      }
+    }
+
+    .bottom {
+      .item-labels {
+        padding: 15px;
+
+        .header-labels {
+          p {
+            font-size: 10px;
+          }
+          .price,
+          .quantity {
+            display: none;
+          }
+        }
+
+        .item-details {
+          .individual-item {
+            p {
+              font-size: 10px;
+            }
+            .price,
+            .quantity {
+              display: none;
+            }
+          }
+        }
+      }
+
+      .amount-due {
+        padding: 15px;
+
+        h2 {
+          font-size: 14px;
+        }
+
+        p {
+          font-size: 10px;
+        }
       }
     }
   }

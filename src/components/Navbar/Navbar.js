@@ -1,10 +1,11 @@
-import React from "react";
-import styled from "styled-components";
-import logo from "../../assets/images/logo.svg";
-import moonIcon from "../../assets/images/icon-moon.svg";
-import avatar from "../../assets/images/avatar.svg";
+import React from 'react';
+import styled from 'styled-components';
+import logo from '../../assets/images/logo.svg';
+import moonIcon from '../../assets/images/icon-moon.svg';
+import sunIcon from '../../assets/images/icon-sun.svg';
+import avatar from '../../assets/images/avatar.svg';
 
-const Navbar = () => {
+const Navbar = ({ theme, setTheme }) => {
   return (
     <StyledNav>
       <div className="logo-wrapper">
@@ -14,9 +15,33 @@ const Navbar = () => {
 
       <div className="theme-avatar-wrapper">
         <div className="top">
-          <button>
-            <img src={moonIcon} alt="moon" />
-          </button>
+          {theme === 'lightTheme' && (
+            <button
+              onClick={() => {
+                setTheme('darkTheme');
+                localStorage.setItem(
+                  'color-theme',
+                  JSON.stringify('darkTheme')
+                );
+              }}
+            >
+              <img src={moonIcon} alt="moon" />
+            </button>
+          )}
+
+          {theme === 'darkTheme' && (
+            <button
+              onClick={() => {
+                setTheme('lightTheme');
+                localStorage.setItem(
+                  'color-theme',
+                  JSON.stringify('lightTheme')
+                );
+              }}
+            >
+              <img src={sunIcon} alt="sun" />
+            </button>
+          )}
         </div>
 
         <div className="bottom">
@@ -86,6 +111,10 @@ const StyledNav = styled.nav`
         cursor: pointer;
         display: grid;
         place-items: center;
+
+        &:focus {
+          outline: 2px dashed #ffffff;
+        }
       }
     }
 
@@ -98,6 +127,51 @@ const StyledNav = styled.nav`
         height: 50px;
         width: 50px;
       }
+    }
+  }
+
+  @media (max-width: 1024px) {
+    top: 0;
+    height: 90px;
+    width: 100%;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    flex-direction: row;
+    align-items: initial;
+
+    .logo-wrapper {
+      height: 100%;
+      width: 90px;
+      border-top-right-radius: 20px;
+    }
+
+    .theme-avatar-wrapper {
+      height: 100%;
+      width: 180px;
+      display: flex;
+
+      .top,
+      .bottom {
+        height: 100%;
+        flex: 0.5;
+      }
+
+      .top {
+        border-bottom: 0;
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+      }
+    }
+  }
+
+  @media (max-width: 320px) {
+    height: 80px;
+
+    .logo-wrapper {
+      width: 80px;
+    }
+
+    .theme-avatar-wrapper {
+      width: 170px;
     }
   }
 `;

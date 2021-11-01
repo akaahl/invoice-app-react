@@ -1,78 +1,138 @@
-import React from "react";
-import styled from "styled-components";
-import arrowIcon from "../../assets/images/icon-arrow-right.svg";
-import { useSelector } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
-import { formatDate } from "../../utils";
-import { useHistory } from "react-router-dom";
+import React from 'react';
+import styled from 'styled-components';
+import arrowIcon from '../../assets/images/icon-arrow-right.svg';
+import { useSelector } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
+import { formatDate } from '../../utils';
+import { useHistory } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
-const Invoices = () => {
+const Invoices = ({ filterStatus }) => {
   const history = useHistory();
-  const data = useSelector((state) => state.root.data);
+  const data = useSelector(state => state.root.data);
 
-  const handleClick = (id) => {
+  const handleClick = id => {
     history.push(`/invoice/${id}`);
   };
 
+  const ulVariants = {
+    initial: {
+      opacity: 1,
+    },
+    animate: {
+      opacity: 1,
+      transition: {
+        type: 'spring',
+        staggerChildren: 0.3,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const listVariants = {
+    initial: {
+      opacity: 0,
+    },
+    animate: {
+      opacity: 1,
+    },
+  };
+
   return (
-    <StyledList>
-      {data.map(
-        ({ id, paymentDue, clientName, total, status, clientAddress }) => (
-          <StyledInvoice
-            key={uuidv4()}
-            status={status}
-            onClick={(e) => {
-              e.preventDefault();
-              handleClick(id);
-            }}
-          >
-            <div className="left-side">
-              <p className="id">
-                <span>#</span>
-                {id}
-              </p>
-
-              <p className="due-date">Due {formatDate(paymentDue)}</p>
-              <p className="name">{clientName}</p>
-            </div>
-
-            <div className="right-side">
-              <p className="amount">
-                <span>
-                  {clientAddress.country === "United States of America"
-                    ? "$"
-                    : "£"}
-                </span>
-                {total.toLocaleString()}
-              </p>
-
-              <div className="status-wrapper">
-                <div className="circle"></div>
-                <p className="status">
-                  {status[0].toUpperCase() + status.slice(1)}
+    <StyledList variants={ulVariants} initial="initial" animate="animate">
+      {data
+        .filter(invoice =>
+          filterStatus === 'paid'
+            ? invoice.status === 'paid'
+            : filterStatus === 'draft'
+            ? invoice.status === 'draft'
+            : filterStatus === 'pending'
+            ? invoice.status === 'pending'
+            : invoice.status !== 'all'
+        )
+        .map(
+          (
+            { id, paymentDue, clientName, total, status, clientAddress },
+            index
+          ) => (
+            <StyledInvoice
+              key={uuidv4()}
+              status={status}
+              onClick={e => {
+                e.preventDefault();
+                handleClick(id);
+              }}
+              role="button"
+              tabIndex="0"
+              onKeyPress={e => {
+                if (e.code === 'Enter') {
+                  e.preventDefault();
+                  handleClick(id);
+                }
+              }}
+              // variants={{
+              //   initial: {
+              //     opacity: 0,
+              //   },
+              //   animate: {
+              //     opacity: 1,
+              //     transition: {
+              //       type: 'spring',
+              //       delay: index * 0.22,
+              //     },
+              //   },
+              // }}
+              // initial="initial"
+              // animate="animate"
+              variants={listVariants}
+            >
+              <div className="left-side">
+                <p className="id">
+                  <span>#</span>
+                  {id}
                 </p>
+
+                <p className="due-date">Due {formatDate(paymentDue)}</p>
+                <p className="name">{clientName}</p>
               </div>
 
-              <img src={arrowIcon} alt="arrow icon" />
-            </div>
-          </StyledInvoice>
-        )
-      )}
+              <div className="right-side">
+                <p className="amount">
+                  <span>
+                    {clientAddress.country === 'United States of America'
+                      ? '$'
+                      : '£'}
+                  </span>
+                  {total.toLocaleString()}
+                </p>
+
+                <div className="status-wrapper">
+                  <div className="circle"></div>
+                  <p className="status">
+                    {status[0].toUpperCase() + status.slice(1)}
+                  </p>
+                </div>
+
+                <img src={arrowIcon} alt="arrow icon" />
+              </div>
+            </StyledInvoice>
+          )
+        )}
     </StyledList>
   );
 };
 
 export default Invoices;
 
-const StyledList = styled.ul`
+const StyledList = styled(motion.ul)`
   margin-top: 60px;
   list-style: none;
 `;
 
-const StyledInvoice = styled.li`
+const StyledInvoice = styled(motion.li)`
   border: 1px solid transparent;
   border-radius: 8px;
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.invoice};
   padding: 15px 25px;
   width: 100%;
   display: flex;
@@ -95,6 +155,8 @@ const StyledInvoice = styled.li`
 
     p {
       font-size: 12px;
+      color: ${({ theme }) => theme.font};
+      transition: color 0.2s ease-in-out;
     }
 
     .id {
@@ -107,7 +169,8 @@ const StyledInvoice = styled.li`
 
     .due-date,
     .name {
-      color: #888eb0;
+      color: ${({ theme }) => theme.text};
+      transition: color 0.2s ease-in-out;
     }
 
     .due-date {
@@ -123,6 +186,8 @@ const StyledInvoice = styled.li`
       font-size: 16px;
       font-weight: 700;
       margin-right: 30px;
+      color: ${({ theme }) => theme.font};
+      transition: color 0.2s ease-in-out;
     }
 
     .status-wrapper {
@@ -132,36 +197,84 @@ const StyledInvoice = styled.li`
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: ${({ status }) =>
-        status === "paid"
-          ? "#f3fdf9"
-          : status === "pending"
-          ? "#fff8f0"
-          : "#f3f3f5"};
+      background-color: ${({ status, theme }) =>
+        status === 'paid'
+          ? theme.paidBg
+          : status === 'pending'
+          ? theme.pendingBg
+          : theme.draftBg};
       margin-right: 20px;
 
       .circle {
         height: 8px;
         width: 8px;
         border-radius: 50%;
-        background-color: ${({ status }) =>
-          status === "paid"
-            ? "#33d69f"
-            : status === "pending"
-            ? "#ff8f00"
-            : "#373b53"};
+        background-color: ${({ status, theme }) =>
+          status === 'paid'
+            ? '#33d69f'
+            : status === 'pending'
+            ? '#ff8f00'
+            : theme.draft};
         margin-right: 7px;
       }
 
       .status {
         font-size: 12px;
         font-weight: 700;
-        color: ${({ status }) =>
-          status === "paid"
-            ? "#33d69f"
-            : status === "pending"
-            ? "#ff8f00"
-            : "#373b53"};
+        color: ${({ status, theme }) =>
+          status === 'paid'
+            ? '#33d69f'
+            : status === 'pending'
+            ? '#ff8f00'
+            : theme.draft};
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    align-items: initial;
+    padding: 25px;
+
+    .left-side {
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: initial;
+
+      p {
+        width: initial;
+      }
+    }
+
+    .right-side {
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-end;
+
+      .amount,
+      .status-wrapper {
+        margin-right: 0;
+      }
+
+      .status-wrapper {
+        margin-top: 20px;
+      }
+
+      img {
+        display: none;
+      }
+    }
+  }
+
+  @media (max-width: 425px) {
+    padding: 20px;
+
+    .right-side {
+      .amount {
+        font-size: 14px;
+      }
+
+      .status-wrapper {
+        width: 80px;
       }
     }
   }

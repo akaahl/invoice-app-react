@@ -1,37 +1,40 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import arrowIcon from "../../assets/images/icon-arrow-down.svg";
-import plusIcon from "../../assets/images/icon-plus.svg";
-import { ReactComponent as CheckIcon } from "../../assets/images/icon-check.svg";
-import { useSelector, useDispatch } from "react-redux";
-import { openModal } from "../../actions/dataActions";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import arrowIcon from '../../assets/images/icon-arrow-down.svg';
+import plusIcon from '../../assets/images/icon-plus.svg';
+import { ReactComponent as CheckIcon } from '../../assets/images/icon-check.svg';
+import { useSelector, useDispatch } from 'react-redux';
+import { openModal } from '../../actions/dataActions';
 
-const Header = () => {
+const Header = ({ filterStatus, setFilterStatus }) => {
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
-  const [filterStatus, setFilterStatus] = useState("all");
-  const data = useSelector((state) => state.root.data);
+  const data = useSelector(state => state.root.data);
 
-  const closeModal = (e) => {
+  const closeModal = e => {
     e.preventDefault();
     setModal(false);
-    document.removeEventListener("click", closeModal);
+    document.removeEventListener('click', closeModal);
   };
 
-  const handleModal = (e) => {
+  const handleModal = e => {
     e.stopPropagation();
 
     if (modal) {
       setModal(false);
     } else {
       setModal(true);
-      document.addEventListener("click", closeModal);
+      document.addEventListener('click', closeModal);
     }
   };
 
-  const handleFilter = (e) => {
+  const handleFilter = e => {
     setFilterStatus(e.target.value);
   };
+
+  useEffect(() => {
+    return () => setModal(false);
+  }, []);
 
   return (
     <StyledHeader>
@@ -43,19 +46,17 @@ const Header = () => {
       <div className="right-side">
         <div className="filter-wrapper">
           <button className="filter-btn" onClick={handleModal}>
-            Filter by status
+            <span className="desktop">Filter by status</span>
+            <span className="mobile">Filter</span>
             <img
               src={arrowIcon}
               alt="arrow"
-              className={modal ? "rotate" : ""}
+              className={modal ? 'rotate' : ''}
             />
           </button>
 
           {modal && (
-            <div
-              className="status-wrapper"
-              onClick={(e) => e.stopPropagation()}
-            >
+            <div className="status-wrapper" onClick={e => e.stopPropagation()}>
               <label htmlFor="all" className="all">
                 <input
                   type="radio"
@@ -63,9 +64,16 @@ const Header = () => {
                   id="all"
                   value="all"
                   onChange={handleFilter}
-                  checked={filterStatus === "all"}
+                  checked={filterStatus === 'all'}
                 />
-                <div className="custom-checkbox">
+                <div
+                  className="custom-checkbox"
+                  role="button"
+                  tabIndex="0"
+                  onKeyPress={e => {
+                    if (e.code === 'Enter') setFilterStatus('all');
+                  }}
+                >
                   <CheckIcon />
                 </div>
                 <span>All</span>
@@ -78,9 +86,16 @@ const Header = () => {
                   id="paid"
                   value="paid"
                   onChange={handleFilter}
-                  checked={filterStatus === "paid"}
+                  checked={filterStatus === 'paid'}
                 />
-                <div className="custom-checkbox">
+                <div
+                  className="custom-checkbox"
+                  role="button"
+                  tabIndex="0"
+                  onKeyPress={e => {
+                    if (e.code === 'Enter') setFilterStatus('paid');
+                  }}
+                >
                   <CheckIcon />
                 </div>
                 <span>Paid</span>
@@ -93,9 +108,16 @@ const Header = () => {
                   id="pending"
                   value="pending"
                   onChange={handleFilter}
-                  checked={filterStatus === "pending"}
+                  checked={filterStatus === 'pending'}
                 />
-                <div className="custom-checkbox">
+                <div
+                  className="custom-checkbox"
+                  role="button"
+                  tabIndex="0"
+                  onKeyPress={e => {
+                    if (e.code === 'Enter') setFilterStatus('pending');
+                  }}
+                >
                   <CheckIcon />
                 </div>
                 <span>Pending</span>
@@ -108,9 +130,16 @@ const Header = () => {
                   id="draft"
                   value="draft"
                   onChange={handleFilter}
-                  checked={filterStatus === "draft"}
+                  checked={filterStatus === 'draft'}
                 />
-                <div className="custom-checkbox">
+                <div
+                  className="custom-checkbox"
+                  role="button"
+                  tabIndex="0"
+                  onKeyPress={e => {
+                    if (e.code === 'Enter') setFilterStatus('draft');
+                  }}
+                >
                   <CheckIcon />
                 </div>
                 <span>Draft</span>
@@ -123,13 +152,13 @@ const Header = () => {
           className="add-invoice-btn"
           onClick={() => {
             dispatch(openModal());
-            document.body.style.overflowY = "hidden";
+            document.body.style.overflowY = 'hidden';
           }}
         >
           <div className="icon">
             <img src={plusIcon} alt="plus icon" />
           </div>
-          New Invoice
+          <span>New Invoice</span>
         </button>
       </div>
     </StyledHeader>
@@ -146,9 +175,10 @@ const StyledHeader = styled.header`
   .left-side {
     h1 {
       font-size: 30px;
+      color: ${({ theme }) => theme.font};
     }
     p {
-      color: #888eb0;
+      color: ${({ theme }) => theme.text};
       margin-top: 10px;
       font-size: 12px;
     }
@@ -165,12 +195,18 @@ const StyledHeader = styled.header`
         border: none;
         padding: 10px;
         background: none;
-        color: #000000;
+        color: ${({ theme }) => theme.font};
         font-weight: 700;
         font-size: 12px;
         display: flex;
         align-items: center;
         cursor: pointer;
+
+        span {
+          &.mobile {
+            display: none;
+          }
+        }
 
         img {
           margin-left: 10px;
@@ -184,7 +220,7 @@ const StyledHeader = styled.header`
 
       .status-wrapper {
         position: absolute;
-        background-color: #ffffff;
+        background-color: ${({ theme }) => theme.status};
         top: 60px;
         padding: 20px;
         border-radius: 8px;
@@ -193,7 +229,7 @@ const StyledHeader = styled.header`
 
         label {
           display: block;
-
+          color: ${({ theme }) => theme.font};
           cursor: pointer;
           display: flex;
 
@@ -207,7 +243,7 @@ const StyledHeader = styled.header`
             margin-top: 8px;
           }
 
-          input[type="radio"] {
+          input[type='radio'] {
             display: none;
 
             &:checked ~ .custom-checkbox {
@@ -223,7 +259,7 @@ const StyledHeader = styled.header`
             height: 17px;
             width: 17px;
             border-radius: 3px;
-            background-color: #dfe3fa;
+            background-color: ${({ theme }) => theme.checkbox};
             border: 1px solid transparent;
             transition: all 0.2 ease-in-out;
             display: grid;
@@ -263,7 +299,7 @@ const StyledHeader = styled.header`
       font-weight: 700;
       font-size: 12px;
       cursor: pointer;
-      transition: all 0.2s ease-in-out;
+      transition: background-color 0.2s ease-in-out;
 
       &:hover {
         background-color: #9277ff;
@@ -276,6 +312,56 @@ const StyledHeader = styled.header`
         border-radius: 50%;
         background-color: #ffffff;
         margin-right: 10px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .right-side {
+      .add-invoice-btn {
+        padding: 8px;
+        border-radius: 5px;
+
+        .icon {
+          margin-right: 0;
+          border-radius: 5px;
+        }
+
+        span {
+          display: none;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 425px) {
+    .left-side {
+      h1 {
+        font-size: 20px;
+      }
+
+      p {
+        display: none;
+      }
+    }
+
+    .right-side {
+      .filter-wrapper {
+        .filter-btn {
+          span {
+            &.desktop {
+              display: none;
+            }
+
+            &.mobile {
+              display: block;
+            }
+          }
+        }
+
+        .status-wrapper {
+          right: -40px;
+        }
       }
     }
   }

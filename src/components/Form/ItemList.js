@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import { FieldArray } from "formik";
-import { ReactComponent as DeleteIcon } from "../../assets/images/icon-delete.svg";
-import plusIcon from "../../assets/images/icon-plus.svg";
-import InputWrapper from "./InputWrapper";
+import React, { useEffect } from 'react';
+import { FieldArray } from 'formik';
+import { ReactComponent as DeleteIcon } from '../../assets/images/icon-delete.svg';
+import plusIcon from '../../assets/images/icon-plus.svg';
+import InputWrapper from './InputWrapper';
 
 const ItemList = ({
   errors,
@@ -10,15 +10,16 @@ const ItemList = ({
   setItemListError,
   selectedItems,
   setFieldValue,
+  mainRef,
 }) => {
   useEffect(() => {
     if (selectedItems) {
-      setFieldValue("itemList", selectedItems);
+      setFieldValue('itemList', selectedItems);
     }
   }, [selectedItems, setFieldValue]);
   return (
     <FieldArray name="itemList">
-      {(fieldArrayProps) => {
+      {fieldArrayProps => {
         const { push, remove, form } = fieldArrayProps;
         const { values } = form;
         const { itemList } = values;
@@ -73,8 +74,8 @@ const ItemList = ({
                         </span>
                       </div>
 
-                      <button type="button">
-                        <DeleteIcon onClick={() => remove(index)} />
+                      <button type="button" onClick={() => remove(index)}>
+                        <DeleteIcon />
                       </button>
                     </li>
                   );
@@ -85,12 +86,13 @@ const ItemList = ({
               className="add-new-btn"
               onClick={() => {
                 push({
-                  name: "",
-                  quantity: "",
-                  price: "",
+                  name: '',
+                  quantity: '',
+                  price: '',
                   total: 0,
                 });
                 setItemListError(false);
+                mainRef.current.scrollTo({ top: 10000 });
               }}
             >
               <img src={plusIcon} alt="plus icon" />

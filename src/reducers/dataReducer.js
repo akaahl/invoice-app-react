@@ -1,28 +1,27 @@
-const invoiceStorage = JSON.parse(localStorage.getItem("invoiceStorage"));
+const invoiceStorage = JSON.parse(localStorage.getItem('invoiceStorage'));
 
 const initialState = {
-  data: invoiceStorage || [],
-  filterModal: false,
+  data: invoiceStorage ?? [],
   formModal: false,
   invoiceId: null,
 };
 
 const dataReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "FETCH_DATA":
+    case 'FETCH_DATA':
       return { ...state, data: action.payload.data };
 
-    case "UPDATE_DATA":
+    case 'UPDATE_DATA':
       return { ...state, data: action.payload.data };
 
-    case "OPEN_MODAL":
+    case 'OPEN_MODAL':
       return {
         ...state,
         formModal: true,
         invoiceId: action.payload.id,
       };
 
-    case "CLOSE_MODAL":
+    case 'CLOSE_MODAL':
       return { ...state, formModal: false, invoiceId: null };
 
     default:

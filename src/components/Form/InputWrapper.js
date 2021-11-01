@@ -23,7 +23,6 @@ const InputWrapper = ({
     return formattedDate;
   };
 
-  // console.log(setFieldValue);
   useEffect(() => {
     if (setFieldValue && selectedItems) {
       setFieldValue(`itemList[${index}].${name}`, selectedItems[index][name]);
