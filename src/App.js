@@ -15,14 +15,6 @@ function App() {
   const [theme, setTheme] = useState('lightTheme');
   const location = useLocation();
 
-  useEffect(() => {
-    const colorTheme = JSON.parse(localStorage.getItem('color-theme'));
-
-    return !colorTheme
-      ? localStorage.setItem('color-theme', JSON.stringify(theme))
-      : setTheme(colorTheme);
-  }, [setTheme, theme]);
-
   return (
     <ThemeProvider theme={theme === 'lightTheme' ? lightTheme : darkTheme}>
       <StyledApp>

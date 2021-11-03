@@ -2,14 +2,22 @@ import React from 'react';
 import styled from 'styled-components';
 import arrowIcon from '../../assets/images/icon-arrow-right.svg';
 import { useSelector } from 'react-redux';
-import { v4 as uuidv4 } from 'uuid';
 import { formatDate } from '../../utils';
 import { useHistory } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import EmptyInvoice from './EmptyInvoice';
 
 const Invoices = ({ filterStatus }) => {
   const history = useHistory();
-  const data = useSelector(state => state.root.data);
+  const data = useSelector(state => state.root.data).filter(invoice =>
+    filterStatus === 'paid'
+      ? invoice.status === 'paid'
+      : filterStatus === 'draft'
+      ? invoice.status === 'draft'
+      : filterStatus === 'pending'
+      ? invoice.status === 'pending'
+      : invoice.status !== 'all'
+  );
 
   const handleClick = id => {
     history.push(`/invoice/${id}`);
@@ -22,41 +30,33 @@ const Invoices = ({ filterStatus }) => {
     animate: {
       opacity: 1,
       transition: {
-        type: 'spring',
         staggerChildren: 0.3,
-        delayChildren: 0.2,
       },
     },
   };
 
-  const listVariants = {
+  const liVariants = {
     initial: {
       opacity: 0,
     },
     animate: {
       opacity: 1,
+      transition: {
+        duration: 0.3,
+      },
     },
   };
 
   return (
     <StyledList variants={ulVariants} initial="initial" animate="animate">
-      {data
-        .filter(invoice =>
-          filterStatus === 'paid'
-            ? invoice.status === 'paid'
-            : filterStatus === 'draft'
-            ? invoice.status === 'draft'
-            : filterStatus === 'pending'
-            ? invoice.status === 'pending'
-            : invoice.status !== 'all'
-        )
-        .map(
+      {data.length ? (
+        data.map(
           (
             { id, paymentDue, clientName, total, status, clientAddress },
             index
           ) => (
             <StyledInvoice
-              key={uuidv4()}
+              key={index}
               status={status}
               onClick={e => {
                 e.preventDefault();
@@ -70,21 +70,7 @@ const Invoices = ({ filterStatus }) => {
                   handleClick(id);
                 }
               }}
-              // variants={{
-              //   initial: {
-              //     opacity: 0,
-              //   },
-              //   animate: {
-              //     opacity: 1,
-              //     transition: {
-              //       type: 'spring',
-              //       delay: index * 0.22,
-              //     },
-              //   },
-              // }}
-              // initial="initial"
-              // animate="animate"
-              variants={listVariants}
+              variants={liVariants}
             >
               <div className="left-side">
                 <p className="id">
@@ -117,7 +103,10 @@ const Invoices = ({ filterStatus }) => {
               </div>
             </StyledInvoice>
           )
-        )}
+        )
+      ) : (
+        <EmptyInvoice filterStatus={filterStatus} />
+      )}
     </StyledList>
   );
 };
@@ -140,6 +129,7 @@ const StyledInvoice = styled(motion.li)`
   justify-content: space-between;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  z-index: 1;
 
   &:hover {
     border: 1px solid #7c5dfa;

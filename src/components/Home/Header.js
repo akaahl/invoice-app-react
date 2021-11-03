@@ -5,11 +5,20 @@ import plusIcon from '../../assets/images/icon-plus.svg';
 import { ReactComponent as CheckIcon } from '../../assets/images/icon-check.svg';
 import { useSelector, useDispatch } from 'react-redux';
 import { openModal } from '../../actions/dataActions';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const Header = ({ filterStatus, setFilterStatus }) => {
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
-  const data = useSelector(state => state.root.data);
+  const data = useSelector(state => state.root.data).filter(invoice =>
+    filterStatus === 'paid'
+      ? invoice.status === 'paid'
+      : filterStatus === 'draft'
+      ? invoice.status === 'draft'
+      : filterStatus === 'pending'
+      ? invoice.status === 'pending'
+      : invoice.status !== 'all'
+  );
 
   const closeModal = e => {
     e.preventDefault();
@@ -32,6 +41,21 @@ const Header = ({ filterStatus, setFilterStatus }) => {
     setFilterStatus(e.target.value);
   };
 
+  const filterVariants = {
+    initial: {
+      y: -50,
+      opacity: 0,
+    },
+    animate: {
+      y: 0,
+      opacity: 1,
+    },
+    exit: {
+      y: -50,
+      opacity: 0,
+    },
+  };
+
   useEffect(() => {
     return () => setModal(false);
   }, []);
@@ -40,7 +64,17 @@ const Header = ({ filterStatus, setFilterStatus }) => {
     <StyledHeader>
       <div className="left-side">
         <h1>Invoices</h1>
-        <p>There are {data.length} total invoices.</p>
+        <p>
+          There are {data.length === 0 ? 'no' : data.length}{' '}
+          {filterStatus === 'all'
+            ? 'total'
+            : filterStatus === 'paid'
+            ? 'paid'
+            : filterStatus === 'pending'
+            ? 'pending'
+            : 'draft'}{' '}
+          invoices.
+        </p>
       </div>
 
       <div className="right-side">
@@ -55,97 +89,106 @@ const Header = ({ filterStatus, setFilterStatus }) => {
             />
           </button>
 
-          {modal && (
-            <div className="status-wrapper" onClick={e => e.stopPropagation()}>
-              <label htmlFor="all" className="all">
-                <input
-                  type="radio"
-                  name="filter"
-                  id="all"
-                  value="all"
-                  onChange={handleFilter}
-                  checked={filterStatus === 'all'}
-                />
-                <div
-                  className="custom-checkbox"
-                  role="button"
-                  tabIndex="0"
-                  onKeyPress={e => {
-                    if (e.code === 'Enter') setFilterStatus('all');
-                  }}
-                >
-                  <CheckIcon />
-                </div>
-                <span>All</span>
-              </label>
+          <AnimatePresence>
+            {modal && (
+              <motion.div
+                className="status-wrapper"
+                onClick={e => e.stopPropagation()}
+                variants={filterVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+              >
+                <label htmlFor="all" className="all">
+                  <input
+                    type="radio"
+                    name="filter"
+                    id="all"
+                    value="all"
+                    onChange={handleFilter}
+                    checked={filterStatus === 'all'}
+                  />
+                  <div
+                    className="custom-checkbox"
+                    role="button"
+                    tabIndex="0"
+                    onKeyPress={e => {
+                      if (e.code === 'Enter') setFilterStatus('all');
+                    }}
+                  >
+                    <CheckIcon />
+                  </div>
+                  <span>All</span>
+                </label>
 
-              <label htmlFor="paid" className="paid">
-                <input
-                  type="radio"
-                  name="filter"
-                  id="paid"
-                  value="paid"
-                  onChange={handleFilter}
-                  checked={filterStatus === 'paid'}
-                />
-                <div
-                  className="custom-checkbox"
-                  role="button"
-                  tabIndex="0"
-                  onKeyPress={e => {
-                    if (e.code === 'Enter') setFilterStatus('paid');
-                  }}
-                >
-                  <CheckIcon />
-                </div>
-                <span>Paid</span>
-              </label>
+                <label htmlFor="paid" className="paid">
+                  <input
+                    type="radio"
+                    name="filter"
+                    id="paid"
+                    value="paid"
+                    onChange={handleFilter}
+                    checked={filterStatus === 'paid'}
+                  />
+                  <div
+                    className="custom-checkbox"
+                    role="button"
+                    tabIndex="0"
+                    onKeyPress={e => {
+                      if (e.code === 'Enter') setFilterStatus('paid');
+                    }}
+                  >
+                    <CheckIcon />
+                  </div>
+                  <span>Paid</span>
+                </label>
 
-              <label htmlFor="pending">
-                <input
-                  type="radio"
-                  name="filter"
-                  id="pending"
-                  value="pending"
-                  onChange={handleFilter}
-                  checked={filterStatus === 'pending'}
-                />
-                <div
-                  className="custom-checkbox"
-                  role="button"
-                  tabIndex="0"
-                  onKeyPress={e => {
-                    if (e.code === 'Enter') setFilterStatus('pending');
-                  }}
-                >
-                  <CheckIcon />
-                </div>
-                <span>Pending</span>
-              </label>
+                <label htmlFor="pending">
+                  <input
+                    type="radio"
+                    name="filter"
+                    id="pending"
+                    value="pending"
+                    onChange={handleFilter}
+                    checked={filterStatus === 'pending'}
+                  />
+                  <div
+                    className="custom-checkbox"
+                    role="button"
+                    tabIndex="0"
+                    onKeyPress={e => {
+                      if (e.code === 'Enter') setFilterStatus('pending');
+                    }}
+                  >
+                    <CheckIcon />
+                  </div>
+                  <span>Pending</span>
+                </label>
 
-              <label htmlFor="draft">
-                <input
-                  type="radio"
-                  name="filter"
-                  id="draft"
-                  value="draft"
-                  onChange={handleFilter}
-                  checked={filterStatus === 'draft'}
-                />
-                <div
-                  className="custom-checkbox"
-                  role="button"
-                  tabIndex="0"
-                  onKeyPress={e => {
-                    if (e.code === 'Enter') setFilterStatus('draft');
-                  }}
-                >
-                  <CheckIcon />
-                </div>
-                <span>Draft</span>
-              </label>
-            </div>
-          )}
+                <label htmlFor="draft">
+                  <input
+                    type="radio"
+                    name="filter"
+                    id="draft"
+                    value="draft"
+                    onChange={handleFilter}
+                    checked={filterStatus === 'draft'}
+                  />
+                  <div
+                    className="custom-checkbox"
+                    role="button"
+                    tabIndex="0"
+                    onKeyPress={e => {
+                      if (e.code === 'Enter') setFilterStatus('draft');
+                    }}
+                  >
+                    <CheckIcon />
+                  </div>
+                  <span>Draft</span>
+                </label>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <button
@@ -226,6 +269,7 @@ const StyledHeader = styled.header`
         border-radius: 8px;
         box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.1);
         width: 180px;
+        z-index: 100;
 
         label {
           display: block;

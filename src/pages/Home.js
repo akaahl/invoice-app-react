@@ -21,6 +21,7 @@ const Home = () => {
       transition: {
         type: 'spring',
         duration: 0.4,
+        when: 'beforeChildren',
       },
     },
     exit: {

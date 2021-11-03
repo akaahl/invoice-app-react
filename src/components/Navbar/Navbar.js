@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import logo from '../../assets/images/logo.svg';
 import moonIcon from '../../assets/images/icon-moon.svg';
@@ -6,6 +6,14 @@ import sunIcon from '../../assets/images/icon-sun.svg';
 import avatar from '../../assets/images/avatar.svg';
 
 const Navbar = ({ theme, setTheme }) => {
+  useEffect(() => {
+    const colorTheme = JSON.parse(localStorage.getItem('color-theme'));
+
+    return !colorTheme
+      ? localStorage.setItem('color-theme', JSON.stringify(theme))
+      : setTheme(colorTheme);
+  }, [setTheme, theme]);
+
   return (
     <StyledNav>
       <div className="logo-wrapper">

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import StyledForm from './styles';
 import { Formik, Form } from 'formik';
 import {
@@ -22,7 +22,6 @@ import { closeModal, updateData } from '../../actions/dataActions';
 const InnerForm = () => {
   const dispatch = useDispatch();
   const [itemListError, setItemListError] = useState(false);
-  const mainRef = useRef();
   const params = useSelector(state => state.root.invoiceId);
   const selectedInvoice = JSON.parse(
     localStorage.getItem('invoiceStorage')
@@ -100,7 +99,6 @@ const InnerForm = () => {
       invoiceStorage.unshift(newInvoice);
       localStorage.setItem('invoiceStorage', JSON.stringify(invoiceStorage));
       dispatch(updateData(invoiceStorage));
-      document.body.style.overflowY = 'scroll';
     } else {
       const newInvoiceStorage = invoiceStorage.map(invoice =>
         invoice.id === params ? { ...newInvoice } : invoice
@@ -108,6 +106,7 @@ const InnerForm = () => {
       localStorage.setItem('invoiceStorage', JSON.stringify(newInvoiceStorage));
       dispatch(updateData(newInvoiceStorage));
     }
+    document.body.style.overflowY = 'scroll';
     dispatch(closeModal());
   };
 
@@ -122,10 +121,18 @@ const InnerForm = () => {
       x: '-100%',
     },
     animate: {
-      x: 0,
+      x: '-4%',
+      transition: {
+        type: 'spring',
+        duration: 0.5,
+      },
     },
     exit: {
       x: '-100%',
+      transition: {
+        type: 'spring',
+        duration: 0.5,
+      },
     },
   };
 
@@ -151,7 +158,7 @@ const InnerForm = () => {
                 <h1>Create Invoice</h1>
               </header>
 
-              <main ref={mainRef}>
+              <main>
                 <fieldset className="bill-from">
                   <legend>Bill From</legend>
 
@@ -328,7 +335,6 @@ const InnerForm = () => {
                         selectedInvoice ? selectedInvoice.items : ''
                       }
                       setFieldValue={setFieldValue}
-                      mainRef={mainRef}
                     />
 
                     <div className="error-messages">

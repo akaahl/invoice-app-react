@@ -24,7 +24,7 @@ const DeleteModal = ({ setDeleteModal, id }) => {
       localStorage.setItem('invoiceStorage', JSON.stringify(newInvoices));
       dispatch(updateData(newInvoices));
       document.body.style.overflowY = 'scroll';
-    }, 1000);
+    }, 1100);
   };
 
   const modalWrapperVariants = {

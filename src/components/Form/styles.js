@@ -511,7 +511,7 @@ const StyledForm = styled(motion.div)`
     margin-top: 90px;
     margin-left: 0;
     height: calc(100% - 90px);
-    padding: 30px 40px 30px 50px;
+    padding: 30px 40px 30px 60px;
 
     main {
       height: 60%;
@@ -519,7 +519,7 @@ const StyledForm = styled(motion.div)`
   }
 
   @media (max-width: 768px) {
-    width: 100%;
+    width: 104%;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 
@@ -599,7 +599,7 @@ const StyledForm = styled(motion.div)`
   }
 
   @media (max-width: 425px) {
-    padding: 30px 20px 30px 20px;
+    padding: 30px 20px 30px 40px;
 
     header {
       h1 {
@@ -654,7 +654,7 @@ const StyledForm = styled(motion.div)`
   @media (min-height: 600px) {
     main {
       margin-top: 20px;
-      height: 75%;
+      height: 73%;
     }
 
     footer {
@@ -664,23 +664,27 @@ const StyledForm = styled(motion.div)`
 
   @media (min-height: 700px) {
     main {
-      height: 77%;
+      height: 75%;
     }
   }
 
   @media (min-height: 800px) {
     main {
-      height: 82%;
+      height: 80%;
     }
   }
 
   @media (min-height: 1000px) {
     main {
-      height: 85%;
+      height: 82%;
     }
   }
 
   @media (min-height: 1300px) {
+    form {
+      height: auto;
+    }
+
     main {
       height: 90%;
     }

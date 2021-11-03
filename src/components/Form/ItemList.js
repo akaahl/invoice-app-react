@@ -10,7 +10,6 @@ const ItemList = ({
   setItemListError,
   selectedItems,
   setFieldValue,
-  mainRef,
 }) => {
   useEffect(() => {
     if (selectedItems) {
@@ -92,7 +91,6 @@ const ItemList = ({
                   total: 0,
                 });
                 setItemListError(false);
-                mainRef.current.scrollTo({ top: 10000 });
               }}
             >
               <img src={plusIcon} alt="plus icon" />
