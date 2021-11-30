@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import GlobalStyle from './globalStyles';
 import Navbar from './components/Navbar/Navbar';
 import FormWrapper from './components/Form/FormWrapper';

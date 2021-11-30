@@ -128,7 +128,7 @@ Typically in Formik, the Field component is normally used to render any kinds of
     />
 ```
 
-The ItemList component housed the FieldsArray and its children in entirety. It has several props that I will get to later on.
+The ItemList component housed the FieldArray and its children in entirety. It has several props that I will get to later on.
 
 ```
 const ItemList = ({
